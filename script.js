@@ -186,3 +186,15 @@ function drawBroad() {
         }
     }
 }
+
+// Tạo đối tượng mảnh
+function Piece(tetromino,color){
+    this.tetromino = tetromino;
+    this.color = color;
+    // bắt đầu với mẫu đầu tiên của mảnh
+    this.tetrominoN = 0;
+    this.activeTetromino = this.tetromino[this.tetrominoN];
+    // vị trí bắt đầu rơi của mảnh
+    this.x = 3;
+    this.y = -2;
+}
