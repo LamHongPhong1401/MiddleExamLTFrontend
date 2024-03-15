@@ -150,3 +150,12 @@ const Z = [
         [1, 0, 0]
     ]
 ];
+
+const canvas = document.getElementById("tetris-canvas");
+const ctx = canvas.getContext("2d");
+const score = document.getElementById("score");
+
+const colorEmptySquare = "WHITE";
+const COLUMNS  = 10;
+const ROWS = 20;
+const squareSize = 20;
