@@ -168,3 +168,21 @@ function drawSquare(x,y,color) {
     ctx.strokeStyle = "BLACK";
     ctx.strokeRect(x * squareSize, y * squareSize, squareSize, squareSize);
 }
+
+// Tạo bảng
+let board = [];
+for( i = 0; i <ROWS; i++){
+    board[i] = [];
+    for(j = 0; j < COLUMNS; j++){
+        board[i][j] = colorEmptySquare;
+    }
+}
+
+//vẽ bảng
+function drawBroad() {
+    for (let i = 0; i < ROWS; i++) {
+        for (let j = 0; j < COLUMNS; j++) {
+            drawSquare(j, i, board[i][j])
+        }
+    }
+}
