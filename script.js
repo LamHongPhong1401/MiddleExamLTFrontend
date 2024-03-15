@@ -1,4 +1,7 @@
-
+$(document).ready(function() {
+    drawBroad()
+    randomPiece()
+})
 
 const I = [
     [
@@ -206,4 +209,22 @@ Piece.prototype.fill = function(color) {
             if(this.activeTetromino[i][j]) drawSquare(this.x + j, this.y + i, color);
         }
     }
+}
+
+// the pieces and their colors
+const PIECES = [
+    [Z,"green"],
+    [L,"purple"],
+    [I,"orange"],
+    [S,"red"],
+    [T,"yellow"],
+    [O,"blue"],
+    [J,"cyan"]
+];
+
+// Hàm tạo mảnh rơi ngẫu nhiên
+function randomPiece() {
+    let randomPiecePattern = Math.floor(Math.random() * PIECES.length)
+    console.log(randomPiecePattern)
+    return new Piece(PIECES[randomPiecePattern][0], PIECES[1][randomPiecePattern])
 }
