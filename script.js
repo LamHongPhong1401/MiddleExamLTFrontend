@@ -198,3 +198,12 @@ function Piece(tetromino,color){
     this.x = 3;
     this.y = -2;
 }
+
+// Tạo phương thức tô màu cho mảnh
+Piece.prototype.fill = function(color) {
+    for (let i = 0; i < this.activeTetromino.length; i++) {
+        for (let j = 0; j < this.activeTetromino.length; j++) {
+            if(this.activeTetromino[i][j]) drawSquare(this.x + j, this.y + i, color);
+        }
+    }
+}
