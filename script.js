@@ -159,3 +159,12 @@ const colorEmptySquare = "WHITE";
 const COLUMNS  = 10;
 const ROWS = 20;
 const squareSize = 20;
+
+// Tạo hàm vẽ ô vuông
+function drawSquare(x,y,color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+
+    ctx.strokeStyle = "BLACK";
+    ctx.strokeRect(x * squareSize, y * squareSize, squareSize, squareSize);
+}
