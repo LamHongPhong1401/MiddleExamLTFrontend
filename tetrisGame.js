@@ -1,6 +1,5 @@
 $(document).ready(function() {
     drawBroad()
-    randomPiece()
 })
 
 const I = [
@@ -225,6 +224,19 @@ const PIECES = [
 // Hàm tạo mảnh rơi ngẫu nhiên
 function randomPiece() {
     let randomPiecePattern = Math.floor(Math.random() * PIECES.length)
-    console.log(randomPiecePattern)
-    return new Piece(PIECES[randomPiecePattern][0], PIECES[1][randomPiecePattern])
+    return new Piece(PIECES[randomPiecePattern][0], PIECES[randomPiecePattern][1])
 }
+
+var piece = randomPiece()
+
+//to mot manh trong bang
+Piece.prototype.drawPiece = function (){
+    this.fill(this.color)
+}
+
+//huy to mot manh trong bang
+Piece.prototype.unDrawPiece = function (){
+    this.fill(colorEmptySquare)
+}
+
+
