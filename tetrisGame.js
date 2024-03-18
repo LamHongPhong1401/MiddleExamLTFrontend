@@ -1,5 +1,6 @@
 $(document).ready(function () {
     drawBroad()
+    dropPiece()
 })
 
 const I = [
@@ -155,7 +156,7 @@ const Z = [
 
 const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
-const score = document.getElementById("score");
+// const scoreElement = document.getElementById("score");
 
 const colorEmptySquare = "WHITE";
 const COLUMNS = 10;
@@ -163,7 +164,6 @@ const ROWS = 20;
 const squareSize = 20;
 
 let score = 0;
-
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
@@ -308,7 +308,7 @@ Piece.prototype.moveDown = function () {
         this.drawPiece()
     }else{
         this.lock()
-        p = randomPiece()
+        piece = randomPiece()
     }
 }
 
@@ -357,7 +357,7 @@ function dropPiece(){
     let now = Date.now()
     let delta = now - startDrop
     if(delta > 1000){
-        p.moveDown()
+        piece.moveDown()
         startDrop = Date.now()
     }
     if(!gameOver) requestAnimationFrame(dropPiece)
@@ -367,15 +367,15 @@ function dropPiece(){
 document.addEventListener("keydown",CONTROL)
 function CONTROL(event){
     if(event.keyCode == 37){
-        p.moveLeft()
+        piece.moveLeft()
         startDrop = Date.now()
     }else if(event.keyCode == 38){
-        p.rotato()
+        piece.rotato()
         startDrop = Date.now()
     }
     else if(event.keyCode == 39){
-        p.moveRight()
+        piece.moveRight()
         startDrop = Date.now()
-    }else p.moveDown()
+    }else piece.moveDown()
 }
 
