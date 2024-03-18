@@ -258,6 +258,7 @@ Piece.prototype.collision = function (x, y, piece) {
             if (board[newX][newY] != colorEmptySquare) return true;
         }
     }
+    return false;
 }
 
 // hàm điều khiển xoay
@@ -291,7 +292,7 @@ Piece.prototype.moveRight = function () {
 }
 
 // hàm điều khiển sang trai
-Piece.prototype.moveRight = function () {
+Piece.prototype.moveLeft = function () {
     if(!this.collision(-1, 0, this.activeTetromino)){
         this.unDrawPiece()
         this.x -= 1
@@ -320,6 +321,7 @@ Piece.prototype.lock = function () {
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
             if(this.y + j < 0) {
                 alert("game over")
+                gameOver = true
                 break
             }
             // đặt mảnh xếp khi gặp va chạm
@@ -347,3 +349,33 @@ Piece.prototype.lock = function () {
     }
     $('#score').inert(score)
 }
+
+// di chuyển mảnh xếp mỗi giây
+let startDrop = Date.now()
+let gameOver = false
+function dropPiece(){
+    let now = Date.now()
+    let delta = now - startDrop
+    if(delta > 1000){
+        p.moveDown()
+        startDrop = Date.now()
+    }
+    if(!gameOver) requestAnimationFrame(dropPiece)
+}
+
+// điều khiển mảnh xếp
+document.addEventListener("keydown",CONTROL)
+function CONTROL(event){
+    if(event.keyCode == 37){
+        p.moveLeft()
+        startDrop = Date.now()
+    }else if(event.keyCode == 38){
+        p.rotato()
+        startDrop = Date.now()
+    }
+    else if(event.keyCode == 39){
+        p.moveRight()
+        startDrop = Date.now()
+    }else p.moveDown()
+}
+
