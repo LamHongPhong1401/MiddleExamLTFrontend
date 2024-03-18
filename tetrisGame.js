@@ -239,4 +239,22 @@ Piece.prototype.unDrawPiece = function (){
     this.fill(colorEmptySquare)
 }
 
+//hàm xử lý va chạm
+Piece.prototype.collision = function(x, y, piece){
+    for (let i = 0; i < piece.length; i++) {
+        for (let j = 0; j < piece.length; j++) {
+            // nếu là ô trống thì bỏ qua
+            if(!piece[i][j]) continue;
+            // toạ độ mới của piece sau khi di chuyển
+            let newX = this.x + j + x;
+            let newY = this.y + i + y;
+
+            if(newX < 0 || newX >= COLUMNS || newY >= ROWS) return true;
+            // nếu newY < 0 thì board[-1][x] không đúng quy tắc game
+            if(newY < 0) continue;
+            // Kiểm tra đã có piece ở chỗ đó hay ch
+            if(board[newX][newY] != colorEmptySquare) return true;
+        }
+    }
+}
 
