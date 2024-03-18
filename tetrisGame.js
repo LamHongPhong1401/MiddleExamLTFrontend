@@ -162,6 +162,8 @@ const COLUMNS = 10;
 const ROWS = 20;
 const squareSize = 20;
 
+let score = 0;
+
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
@@ -304,6 +306,44 @@ Piece.prototype.moveDown = function () {
         this.y +=1
         this.drawPiece()
     }else{
-        // xu ly thu gi do
+        this.lock()
+        p = randomPiece()
     }
+}
+
+// hàm khóa di chuyển mảnh xếp khi gặp va chạm
+Piece.prototype.lock = function () {
+    for (let i = 0; i < this.activeTetromino.length ; i++) {
+        for (let j = 0; j < this.activeTetromino.length; j++) {
+            // nếu là ô trắng thì bỏ qua
+            if(this.activeTetromino[i][j]) continue;
+            // nếu màu tràn bảng theo chiều dọc thì kết thúc game
+            if(this.y + j < 0) {
+                alert("game over")
+                break
+            }
+            // đặt mảnh xếp khi gặp va chạm
+            board[this.x + i][this.y + j] = this.color
+        }
+    }
+    // xóa hàng đầy mảnh vuông
+    for (let i = 0; i < ROWS; i++) {
+        let isFullRow = true
+        for (let j = 0; j < COLUMNS; j++) {
+            isFullRow = isFullRow && (board[i][j] != colorEmptySquare)
+        }
+        // nếu có hàng đã đầy thì dời hàng ở trên xuống hàng dưới và cộng điểm
+        if(isFullRow){
+            for (let y = i; y > 1 ; y--) {
+                for (let j = 0; j < COLUMNS; j++) {
+                    board[y][j] = board[y-1][j]
+                }
+            }
+            for (let j = 0; j < COLUMNS; j++) {
+                board[0][j] = colorEmptySquare
+            }
+            score += 10
+        }
+    }
+    $('#score').inert(score)
 }
