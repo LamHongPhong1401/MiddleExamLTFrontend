@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    drawBroad()
-    dropPiece()
+
+
 })
 
 const I = [
@@ -156,7 +156,7 @@ const Z = [
 
 const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
-// const scoreElement = document.getElementById("score");
+const scoreElement = document.getElementById("score");
 
 const colorEmptySquare = "WHITE";
 const COLUMNS = 10;
@@ -190,7 +190,7 @@ function drawBroad() {
         }
     }
 }
-
+drawBroad()
 // Tạo đối tượng mảnh
 function Piece(tetromino, color) {
     this.tetromino = tetromino; // một mảng cac mẫu của mảnh xếp
@@ -255,7 +255,7 @@ Piece.prototype.collision = function (x, y, piece) {
             // nếu newY < 0 thì board[-1][x] không đúng quy tắc game
             if (newY < 0) continue;
             // Kiểm tra đã có piece ở chỗ đó hay ch
-            if (board[newX][newY] != colorEmptySquare) return true;
+            if (board[newY][newX] != colorEmptySquare) return true;
         }
     }
     return false;
@@ -317,7 +317,7 @@ Piece.prototype.lock = function () {
     for (let i = 0; i < this.activeTetromino.length ; i++) {
         for (let j = 0; j < this.activeTetromino.length; j++) {
             // nếu là ô trắng thì bỏ qua
-            if(this.activeTetromino[i][j]) continue;
+            if(!this.activeTetromino[i][j]) continue;
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
             if(this.y + j < 0) {
                 alert("game over")
@@ -325,7 +325,7 @@ Piece.prototype.lock = function () {
                 break
             }
             // đặt mảnh xếp khi gặp va chạm
-            board[this.x + i][this.y + j] = this.color
+            board[this.y + i][this.x + j] = this.color
         }
     }
     // xóa hàng đầy mảnh vuông
@@ -347,7 +347,10 @@ Piece.prototype.lock = function () {
             score += 10
         }
     }
-    $('#score').inert(score)
+    // cập nhật lại bảng
+    drawBroad()
+
+    scoreElement.innerHTML = score
 }
 
 // di chuyển mảnh xếp mỗi giây
@@ -376,6 +379,9 @@ function CONTROL(event){
     else if(event.keyCode == 39){
         piece.moveRight()
         startDrop = Date.now()
-    }else piece.moveDown()
+    }else{
+        piece.moveDown()
+    }
 }
 
+dropPiece()
