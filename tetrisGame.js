@@ -1,3 +1,8 @@
+/*
+Author: LamHongPhong
+MSSV: 21130473
+
+ */
 $(document).ready(function () {
 
 
@@ -175,9 +180,9 @@ function drawSquare(x, y, color) {
 
 // Tạo bảng
 let board = [];
-for (i = 0; i < ROWS; i++) {
+for (let i = 0; i < ROWS; i++) {
     board[i] = [];
-    for (j = 0; j < COLUMNS; j++) {
+    for ( let j = 0; j < COLUMNS; j++) {
         board[i][j] = colorEmptySquare;
     }
 }
@@ -225,18 +230,18 @@ const PIECES = [
 
 // Hàm tạo mảnh rơi ngẫu nhiên
 function randomPiece() {
-    let randomPiecePattern = Math.floor(Math.random() * PIECES.length)
+    let randomPiecePattern = Math.floor(Math.random() * PIECES.length) // trả về 0-6
     return new Piece(PIECES[randomPiecePattern][0], PIECES[randomPiecePattern][1])
 }
 
-var piece = randomPiece()
+let piece = randomPiece()
 
-//to mot manh trong bang
+// tô một mảnh xếp
 Piece.prototype.drawPiece = function () {
     this.fill(this.color)
 }
 
-//huy to mot manh trong bang
+// hủy tô màu một mảnh
 Piece.prototype.unDrawPiece = function () {
     this.fill(colorEmptySquare)
 }
@@ -252,7 +257,7 @@ Piece.prototype.collision = function (x, y, piece) {
             let newY = this.y + i + y;
 
             if (newX < 0 || newX >= COLUMNS || newY >= ROWS) return true;
-            // nếu newY < 0 thì board[-1][x] không đúng quy tắc game
+            // nếu newY < 0 thì board[-y][x], bỏ qua nơi mảnh xếp rơi xuống
             if (newY < 0) continue;
             // Kiểm tra đã có piece ở chỗ đó hay ch
             if (board[newY][newX] != colorEmptySquare) return true;
@@ -267,9 +272,9 @@ Piece.prototype.rotato = function () {
     let kich = 0
     // kiểm tra mẫu xoay kế tiếp có va chạm hay không
     if (this.collision(0, 0, nextPattern)) {
-        if (this.x < COLUMNS / 2) kich = 1 // dời mảnh xếp sang phải
+        if (this.x < COLUMNS / 2) kich = 1 // dời mảnh xếp sang phải một vị trí
         else
-            kich = -1 // dời mảnh xếp sang trái
+            kich = -1 // dời mảnh xếp sang trái một vị trí
     }
     // nếu mẫu kế tiếp của mảnh xếp không xảy ra va chạm
     if (!this.collision(kich, 0, nextPattern)) {
@@ -334,7 +339,7 @@ Piece.prototype.lock = function () {
         for (let j = 0; j < COLUMNS; j++) {
             isFullRow = isFullRow && (board[i][j] != colorEmptySquare)
         }
-        // nếu có hàng đã đầy thì dời hàng ở trên xuống hàng dưới và cộng điểm
+        // nếu có hàng đã đầy thì dời các hàng ở trên xuống dưới một vị trí và cộng điểm
         if(isFullRow){
             for (let y = i; y > 1 ; y--) {
                 for (let j = 0; j < COLUMNS; j++) {
@@ -363,6 +368,7 @@ function dropPiece(){
         piece.moveDown()
         startDrop = Date.now()
     }
+    // hàm requestAnimationFrame(callback) dùng để cập nhật và vẽ lại theo lịch đã đặt trước
     if(!gameOver) requestAnimationFrame(dropPiece)
 }
 
