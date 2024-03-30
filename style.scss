@@ -54,11 +54,10 @@ body{
 
 div {
   font-size: 25px;
-  font-weight: bold;
   text-align: center;
 }
 
-canvas {
+#tetris-canvas {
   display: none;
   margin: auto;
 }
@@ -70,7 +69,7 @@ canvas {
 .title-game{
   @include center-flex("");
   flex-direction: column;
-  height: 100vh;
+  height: 70vh;
 }
 h1 {
   font-size: 10rem;
@@ -92,26 +91,42 @@ h1 {
   }
 }
 
-.btn {
-  display: inline-block;
-  background-color: $color-yellow-light;
-  padding: 15px 40px;
-  border: none;
-  border-radius: 30px;
+.bottom-bg{
+  @include middle-custom(flex, space-around, center);
 
-  font-size: 20px;
-  text-decoration: none;
-  text-transform: uppercase;
-  color: $color-orange-light;
+  .select-level{
+    @extend .btn;
 
-  box-shadow: 0 3px 0 $color-yellow-light;
-  cursor: pointer;
-  transition: all 100ms linear;
+    select{
+      padding: 0.5em;
+      border-radius: 10px;
+      border: 0 solid $color-orange-light;
 
-  &:hover {
-    @include transform(translateY(-4px));
-    box-shadow: 0 7px 0 $color-orange-light;
+      &:focus { outline: 0; }
+    }
   }
+  .btn {
+    display: inline-block;
+    background-color: $color-yellow-light;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
 
-  &:focus { outline: 0; }
+    font-size: 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: $color-orange-light;
+
+    box-shadow: 0 3px 0 $color-yellow-light;
+    cursor: pointer;
+    transition: all 100ms linear;
+
+    &:hover {
+      @include transform(translateY(-4px));
+      box-shadow: 0 7px 0 $color-orange-light;
+    }
+
+    &:focus { outline: 0; }
+  }
 }
+

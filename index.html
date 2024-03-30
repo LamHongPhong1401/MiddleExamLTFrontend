@@ -9,13 +9,29 @@
 <body>
 <div id="main">
     <div class="container">
-        <div class="title-game">
-            <h1 class="rotulo-1">Tetris</h1>
-            <h1 class="rotulo-2">Game</h1>
+        <div class="before-start-game">
+            <div class="title-game">
+                <h1 class="rotulo-1">Tetris</h1>
+                <h1 class="rotulo-2">Game</h1>
+            </div>
+            <div class="bottom-bg">
+                <div class="select-level">
+                    <label for="level">Choose level:</label>
+                    <select name="level" id="level">
+                        <option value="level-1">Level 1</option>
+                        <option value="level-2">Level 2</option>
+                        <option value="level-3">Level 3</option>
+                        <option value="level-4">Level 4</option>
+                        <option value="level-5">Level 5</option>
+                        <option value="level-6">Level 6</option>
+                    </select>
+                </div>
+                <button class="btn" id="btn-start">
+                    Start
+                </button>
+            </div>
         </div>
-        <button class="btn" id="btn-start">
-            Start
-        </button>
+
         <div class="start-game">
             <canvas id="tetris-canvas" width="200" height="400"></canvas>
             <div class="display-score">
