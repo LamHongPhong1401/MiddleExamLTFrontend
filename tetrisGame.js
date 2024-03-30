@@ -1,7 +1,5 @@
 /*
-Author: LamHongPhong
-MSSV: 21130473
-
+21130473_LamHongPhong_0376236485_DH21DTC
  */
 $(document).ready(function () {
 

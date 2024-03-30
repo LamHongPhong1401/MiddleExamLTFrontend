@@ -1,8 +1,49 @@
 /*
-Author: LamHongPhong
-MSSV: 21130473
-
+21130473_LamHongPhong_0376236485_DH21DTC
  */
+$color-yellow-light: #F6FDC3;
+$color-orange-light: #FF8080;
+
+@mixin transform($transforms) {
+  -moz-transform: $transforms;
+  -o-transform: $transforms;
+  -ms-transform: $transforms;
+  -webkit-transform: $transforms;
+  transform: $transforms;
+}
+
+@mixin middle-custom($display, $jc, $ai){
+  display: $display;
+  justify-content: $jc;
+  align-items: $ai;
+}
+
+@mixin center-flex($direction) {
+  display: flex;
+  @if ($direction== "x") {
+    justify-content: center;
+  }
+  @if ($direction== "y") {
+    align-items: center;
+  }
+  @if ($direction== "") {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@mixin box($width, $height: $width, $circle:false) {
+  width: $width;
+  height: $height;
+  @if ($circle == true) {
+    border-radius: 50%;
+  }
+}
+body{
+  background-image: url("https://i.pinimg.com/564x/b8/45/04/b84504f0f4eba3fd1c622ed9b68766b7.jpg");
+  background-repeat: repeat;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -18,6 +59,59 @@ div {
 }
 
 canvas {
-  display: block;
+  display: none;
   margin: auto;
+}
+
+.display-score{
+  display: none;
+}
+
+.title-game{
+  @include center-flex("");
+  flex-direction: column;
+  height: 100vh;
+}
+h1 {
+  font-size: 10rem;
+  background-image: linear-gradient(0deg, red, yellow);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: border;
+  -moz-text-fill-color: transparent;
+  -webkit-text-stroke: 0.25rem black;
+  filter: drop-shadow(0.5rem 0.5rem 0 deepskyblue);
+
+  &.rotulo-1 {
+    font-family: Lobster, sans-serif;
+  }
+  &.rotulo-2 {
+    font-family: Bebas Neue, sans-serif;
+  }
+}
+
+.btn {
+  display: inline-block;
+  background-color: $color-yellow-light;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 30px;
+
+  font-size: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: $color-orange-light;
+
+  box-shadow: 0 3px 0 $color-yellow-light;
+  cursor: pointer;
+  transition: all 100ms linear;
+
+  &:hover {
+    @include transform(translateY(-4px));
+    box-shadow: 0 7px 0 $color-orange-light;
+  }
+
+  &:focus { outline: 0; }
 }

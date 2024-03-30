@@ -1,5 +1,4 @@
-<!--Author: LamHongPhong-->
-<!--MSSV: 21130473-->
+<!--21130473_LamHongPhong_0376236485_DH21DTC-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,11 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="main">
+    <div class="container">
+        <div class="title-game">
+            <h1 class="rotulo-1">Tetris</h1>
+            <h1 class="rotulo-2">Game</h1>
+        </div>
+        <button class="btn" id="btn-start">
+            Start
+        </button>
+        <div class="start-game">
+            <canvas id="tetris-canvas" width="200" height="400"></canvas>
+            <div class="display-score">
+                Score : <div id="score">0</div>
+            </div>
+        </div>
 
-<canvas id="tetris-canvas" width="200" height="400"></canvas>
-<div>
-    Score : <div id="score">0</div>
+    </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="tetrisGame.js"></script>
 </body>
