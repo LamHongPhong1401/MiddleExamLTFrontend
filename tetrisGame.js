@@ -3,15 +3,31 @@
  */
 $(document).ready(function () {
     $('#btn-start').click(function () {
-        dropPiece()
-        let level = parseInt($('#level option').filter(":selected").val())
-        if (level === 1) {
-            $('.before-start-game').css('display', 'none');
-            $('.start-game').css('display', 'flex');
-            level_1();
-        } else if (level !== 1) {
-            alert('not have other level')
+        const startGame =  $('.start-game')
+        const beforeStartGame = $('.before-start-game')
+        const bottomBackground = $('.bottom-bg')
+        beforeStartGame.css('display', 'none');
+        startGame.css('display', 'flex');
+        // bottomBackground.appendTo(startGame)
+
+        let level = parseInt($('#level').val())
+        switch (level) {
+            case 1:
+                level_1();
+                break
+            case 2:
+                level_2();
+                break
+            // case 3:
+            //     break
+            // case 4:
+            //     break
+            // case 5:
+            //     break
+            default: alert('not have other level')
+                break
         }
+        dropPiece()
     });
 })
 
@@ -380,7 +396,7 @@ let gameOver = false
 function dropPiece() {
     let now = Date.now()
     let delta = now - startDrop
-    momentSuggestPiece()
+    checkGameOver()
     if (delta > 1000) {
         piece.moveDown()
         startDrop = Date.now()
@@ -389,12 +405,22 @@ function dropPiece() {
     if (!gameOver) requestAnimationFrame(dropPiece)
 }
 
-function momentSuggestPiece() {
+function checkGameOver() {
     if (piece.y > 0 || currentPiece !== null) {
         currentPiece = nextPiece
-        let suggestPiece = $('#suggest-piece')
-        if (suggestPiece !== null) {
-            drawNextPiece(suggestPiece)
+        let level = parseInt($('#level').val())
+        switch (level) {
+            case 1:
+                drawNextPiece($('#suggest-piece'))
+                break
+            case 2:
+                break
+            // case 3:
+            //     break
+            // case 4:
+            //     break
+            // case 5:
+            //     break
         }
     } else {
         gameOver = true
@@ -421,7 +447,7 @@ function CONTROL(event) {
 
 function drawNextPiece(canvas) {
     let draw = canvas.get(0).getContext('2d')
-    draw.clearRect(0, 0, 200, 200)
+    draw.clearRect(0, 0, 100, 100)
     for (let i = 0; i < nextPiece.activeTetromino.length; i++) {
         for (let j = 0; j < nextPiece.activeTetromino.length; j++) {
             if (nextPiece.activeTetromino[i][j]) {
@@ -435,13 +461,11 @@ function drawNextPiece(canvas) {
 }
 
 function level_1() {
-    const display = $('.display-suggest');
-    display.addClass('suggest');
-    display.find('p').text("Suggest");
+        $('.display-suggest').addClass('suggest');
+        $('.display-suggest').find('p').text("Suggest");
 }
 
 function level_2() {
-
 }
 
 function level_3() {
