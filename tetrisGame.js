@@ -3,12 +3,13 @@
  */
 $(document).ready(function () {
     $('#btn-start').click(function () {
-        const startGame =  $('.start-game')
+        const startGame = $('.start-game')
         const beforeStartGame = $('.before-start-game')
-        const bottomBackground = $('.bottom-bg')
+        let btnStartGame = $('#btn-start')
+        btnStartGame.text('Restart')
         beforeStartGame.css('display', 'none');
         startGame.css('display', 'flex');
-        // bottomBackground.appendTo(startGame)
+        dialog()
 
         let level = parseInt($('#level').val())
         switch (level) {
@@ -24,10 +25,17 @@ $(document).ready(function () {
             //     break
             // case 5:
             //     break
-            default: alert('not have other level')
+            default:
+                alert('not have other level')
                 break
         }
+
+        changeLevel()
+
         dropPiece()
+        btnStartGame.click(function () {
+            reDrawBoard()
+        })
     });
 })
 
@@ -191,7 +199,7 @@ const COLUMNS = 10;
 const ROWS = 20;
 const squareSize = 20;
 
-let nextPieceFlag = true
+let stop = false
 let score = 0;
 
 // Tạo hàm vẽ ô vuông
@@ -209,6 +217,15 @@ for (let i = 0; i < ROWS; i++) {
     board[i] = [];
     for (let j = 0; j < COLUMNS; j++) {
         board[i][j] = colorEmptySquare;
+    }
+}
+
+function reDrawBoard() {
+    for (let i = 0; i < ROWS; i++) {
+        for (let j = 0; j < COLUMNS; j++) {
+            drawSquare(j, i, board[i][j] = colorEmptySquare)
+            piece.y = -2
+        }
     }
 }
 
@@ -402,7 +419,7 @@ function dropPiece() {
         startDrop = Date.now()
     }
     // hàm requestAnimationFrame(callback) dùng để cập nhật và vẽ lại theo lịch đã đặt trước
-    if (!gameOver) requestAnimationFrame(dropPiece)
+    if (!gameOver && !stop) requestAnimationFrame(dropPiece)
 }
 
 function checkGameOver() {
@@ -431,6 +448,10 @@ function checkGameOver() {
 document.addEventListener("keydown", CONTROL)
 
 function CONTROL(event) {
+    if(stop){
+        event.preventDefault()
+        return
+    }
     if (event.keyCode == 37) {
         piece.moveLeft()
         startDrop = Date.now()
@@ -461,8 +482,8 @@ function drawNextPiece(canvas) {
 }
 
 function level_1() {
-        $('.display-suggest').addClass('suggest');
-        $('.display-suggest').find('p').text("Suggest");
+    $('.display-suggest').addClass('suggest');
+    $('.display-suggest').find('p').text("Suggest");
 }
 
 function level_2() {
@@ -482,4 +503,46 @@ function level_5() {
 
 function level_5() {
 
+}
+
+// tạo dialog để thông báo
+function dialog() {
+    // Initialize the dialog
+    $("#dialog-message").dialog({
+        autoOpen: false,
+        modal: true,
+        open: function() {
+            $("#overlay").show();
+        },
+        close: function() {
+            $("#overlay").hide();
+        },
+        buttons: {
+            "YES": function () {
+                $(this).dialog("close");
+                console.log("yes")
+                $('[id*=btnYes]').trigger('click');
+                stop = false
+                dropPiece()
+            },
+            "NO": function () {
+                $(this).dialog("close");
+                $('[id*=btnYes]').trigger('click');
+                stop = false
+                dropPiece()
+            },
+        }
+    })
+}
+
+function changeLevel() {
+    $("#level").on("keydown", function(event) {
+        if (event.which >= 37 && event.which <= 40) {
+            event.preventDefault();
+        }
+    });
+    $($('#level').change(() => {
+        $("#dialog-message").dialog("open");
+        stop = true
+    }))
 }

@@ -3,6 +3,7 @@
  */
 $color-yellow-light: #F6FDC3;
 $color-orange-light: #FF8080;
+$color-green-light: #CDFAD5;
 
 @mixin transform($transforms) {
   -moz-transform: $transforms;
@@ -60,6 +61,9 @@ body, html{
 
 #main{
   height: 100%;
+}
+#dialog-message {
+  display: none;
 }
 
 #container{
@@ -180,7 +184,63 @@ h1 {
   background-color: white;
 }
 
+.ui-dialog {
+  background-color: $color-yellow-light;
+  border-radius: 0.5em;
+  position: relative;
+  height: auto;
+  width: 40%;
+  top: -50%;
+  left: 0;
+}
 
+.ui-dialog-titlebar {
+  @include middle-custom(flex, space-between, center);
+  background-color: black;
+  color: $color-green-light;
+  padding: 1em;
+  border-radius: 0.5em 0.5em 0 0;
 
+  .ui-button{
+    display: none;
+  }
 
+}
+
+/* Đổi màu chữ của nội dung dialog */
+.ui-dialog-content {
+  height: auto;
+  background-color: white;
+  color: black;
+  font-size: large;
+}
+
+/* Đổi màu nền của button trong dialog */
+.ui-dialog-buttonset  {
+  width: 100%;
+  height: auto;
+  background-color: black;
+  border-radius: 0 0 0.5em 0.5em ;
+ @include middle-custom(flex, end, center);
+  padding: 1em;
+
+}
+.ui-button{
+  background-color: white;
+  border-radius: 0.5em;
+  color: $color-orange-light;
+  padding: 0.5em;
+}
+.ui-button:hover{
+  background-color: $color-yellow-light;
+}
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+}
 
