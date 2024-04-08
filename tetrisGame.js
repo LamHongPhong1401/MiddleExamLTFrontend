@@ -2,8 +2,17 @@
 21130473_LamHongPhong_0376236485_DH21DTC
  */
 $(document).ready(function () {
-
-
+    $('#btn-start').click(function () {
+        dropPiece()
+        let level = parseInt($('#level option').filter(":selected").val())
+        if (level === 1) {
+            $('.before-start-game').css('display', 'none');
+            $('.start-game').css('display', 'flex');
+            level_1();
+        } else if (level !== 1) {
+            alert('not have other level')
+        }
+    });
 })
 
 const I = [
@@ -166,7 +175,9 @@ const COLUMNS = 10;
 const ROWS = 20;
 const squareSize = 20;
 
+let nextPieceFlag = true
 let score = 0;
+
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
     ctx.fillStyle = color;
@@ -180,7 +191,7 @@ function drawSquare(x, y, color) {
 let board = [];
 for (let i = 0; i < ROWS; i++) {
     board[i] = [];
-    for ( let j = 0; j < COLUMNS; j++) {
+    for (let j = 0; j < COLUMNS; j++) {
         board[i][j] = colorEmptySquare;
     }
 }
@@ -193,7 +204,9 @@ function drawBroad() {
         }
     }
 }
+
 drawBroad()
+
 // Tạo đối tượng mảnh
 function Piece(tetromino, color) {
     this.tetromino = tetromino; // một mảng cac mẫu của mảnh xếp
@@ -232,7 +245,10 @@ function randomPiece() {
     return new Piece(PIECES[randomPiecePattern][0], PIECES[randomPiecePattern][1])
 }
 
-let piece = randomPiece()
+let nextPiece = randomPiece()
+let currentPiece = nextPiece
+let piece = currentPiece
+nextPiece = randomPiece()
 
 // tô một mảnh xếp
 Piece.prototype.drawPiece = function () {
@@ -286,17 +302,16 @@ Piece.prototype.rotato = function () {
 
 // hàm điều khiển sang phải
 Piece.prototype.moveRight = function () {
-    if(!this.collision(1, 0, this.activeTetromino)){
+    if (!this.collision(1, 0, this.activeTetromino)) {
         this.unDrawPiece()
         this.x += 1
         this.drawPiece()
     }
-
 }
 
 // hàm điều khiển sang trai
 Piece.prototype.moveLeft = function () {
-    if(!this.collision(-1, 0, this.activeTetromino)){
+    if (!this.collision(-1, 0, this.activeTetromino)) {
         this.unDrawPiece()
         this.x -= 1
         this.drawPiece()
@@ -305,24 +320,26 @@ Piece.prototype.moveLeft = function () {
 
 // dời mảnh xếp xuống dưới
 Piece.prototype.moveDown = function () {
-    if(!this.collision(0, 1, this.activeTetromino)){
+    // nếu chưa xảy ra va chạm
+    if (!this.collision(0, 1, this.activeTetromino)) {
         this.unDrawPiece()
-        this.y +=1
+        this.y += 1
         this.drawPiece()
-    }else{
+    } else {
         this.lock()
-        piece = randomPiece()
+        piece = currentPiece
+        nextPiece = randomPiece()
     }
 }
 
 // hàm khóa di chuyển mảnh xếp khi gặp va chạm
 Piece.prototype.lock = function () {
-    for (let i = 0; i < this.activeTetromino.length ; i++) {
+    for (let i = 0; i < this.activeTetromino.length; i++) {
         for (let j = 0; j < this.activeTetromino.length; j++) {
             // nếu là ô trắng thì bỏ qua
-            if(!this.activeTetromino[i][j]) continue;
+            if (!this.activeTetromino[i][j]) continue;
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
-            if(this.y + j < 0) {
+            if (this.y + j < 0) {
                 alert("game over")
                 gameOver = true
                 break
@@ -338,10 +355,10 @@ Piece.prototype.lock = function () {
             isFullRow = isFullRow && (board[i][j] != colorEmptySquare)
         }
         // nếu có hàng đã đầy thì dời các hàng ở trên xuống dưới một vị trí và cộng điểm
-        if(isFullRow){
-            for (let y = i; y > 1 ; y--) {
+        if (isFullRow) {
+            for (let y = i; y > 1; y--) {
                 for (let j = 0; j < COLUMNS; j++) {
-                    board[y][j] = board[y-1][j]
+                    board[y][j] = board[y - 1][j]
                 }
             }
             for (let j = 0; j < COLUMNS; j++) {
@@ -359,33 +376,86 @@ Piece.prototype.lock = function () {
 // di chuyển mảnh xếp mỗi giây
 let startDrop = Date.now()
 let gameOver = false
-function dropPiece(){
+
+function dropPiece() {
     let now = Date.now()
     let delta = now - startDrop
-    if(delta > 1000){
+    momentSuggestPiece()
+    if (delta > 1000) {
         piece.moveDown()
         startDrop = Date.now()
     }
     // hàm requestAnimationFrame(callback) dùng để cập nhật và vẽ lại theo lịch đã đặt trước
-    if(!gameOver) requestAnimationFrame(dropPiece)
+    if (!gameOver) requestAnimationFrame(dropPiece)
+}
+
+function momentSuggestPiece() {
+    if (piece.y > 0 || currentPiece !== null) {
+        currentPiece = nextPiece
+        let suggestPiece = $('#suggest-piece')
+        if (suggestPiece !== null) {
+            drawNextPiece(suggestPiece)
+        }
+    } else {
+        gameOver = true
+    }
 }
 
 // điều khiển mảnh xếp
-document.addEventListener("keydown",CONTROL)
-function CONTROL(event){
-    if(event.keyCode == 37){
+document.addEventListener("keydown", CONTROL)
+
+function CONTROL(event) {
+    if (event.keyCode == 37) {
         piece.moveLeft()
         startDrop = Date.now()
-    }else if(event.keyCode == 38){
+    } else if (event.keyCode == 38) {
         piece.rotato()
         startDrop = Date.now()
-    }
-    else if(event.keyCode == 39){
+    } else if (event.keyCode == 39) {
         piece.moveRight()
         startDrop = Date.now()
-    }else{
+    } else {
         piece.moveDown()
     }
 }
 
-dropPiece()
+function drawNextPiece(canvas) {
+    let draw = canvas.get(0).getContext('2d')
+    draw.clearRect(0, 0, 200, 200)
+    for (let i = 0; i < nextPiece.activeTetromino.length; i++) {
+        for (let j = 0; j < nextPiece.activeTetromino.length; j++) {
+            if (nextPiece.activeTetromino[i][j]) {
+                draw.strokeStyle = "BLACK"
+                draw.fillStyle = nextPiece.color
+                draw.fillRect(j * squareSize, i * squareSize, squareSize, squareSize)
+                draw.strokeRect(j * squareSize, i * squareSize, squareSize, squareSize)
+            }
+        }
+    }
+}
+
+function level_1() {
+    const display = $('.display-suggest');
+    display.addClass('suggest');
+    display.find('p').text("Suggest");
+}
+
+function level_2() {
+
+}
+
+function level_3() {
+
+}
+
+function level_4() {
+
+}
+
+function level_5() {
+
+}
+
+function level_5() {
+
+}
