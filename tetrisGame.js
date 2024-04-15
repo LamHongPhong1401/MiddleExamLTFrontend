@@ -37,6 +37,7 @@ $(document).ready(function () {
     })
     //pause
     $('#btn-pause').click(() => {
+        $('#btn-start').prop('disabled', false)
         $('#btn-start').addClass('has-hover').removeClass('disabled-btn')
         showNotification('Pause')
     })
@@ -440,9 +441,8 @@ function dropPiece() {
 }
 
 function createCurrentPiece() {
-    if (piece.y < 0) return
-    if (currentPiece === null) return
     if (gameOver) return
+    if (piece.y < 0) return
     currentPiece = nextPiece
     const level = parseInt($('#level').val())
     switch (level) {
@@ -466,6 +466,7 @@ function createCurrentPiece() {
 function implementGameOver() {
     gameOver = true
     $('#btn-start').addClass('disabled-btn').removeClass('has-hover')
+    $('#btn-start').prop('disabled', true)
     showNotification('Game Over')
 }
 
