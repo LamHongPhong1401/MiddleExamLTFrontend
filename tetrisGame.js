@@ -9,7 +9,7 @@ $(document).ready(function () {
         const configuraton = $('.bottom-bg')
 
         configuraton.hide()
-        btnStartGame.text('Continue')
+        btnStartGame.hide()
         beforeStartGame.css('display', 'none')
         startGame.css('display', 'flex')
 
@@ -19,12 +19,12 @@ $(document).ready(function () {
     })
     //pause
     $('#btn-pause').click(() => {
-        $('#btn-start').prop('disabled', false)
-        $('#btn-start').addClass('has-hover').removeClass('disabled-btn')
+        $('#btn-continue').prop('disabled', false)
+        $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
         showNotification('Pause')
     })
     //continue
-    $('#btn-start').click(function () {
+    $('#btn-continue').on('click', '#btn-pause',function () {
         closeDialog()
     })
     // new game
@@ -34,11 +34,21 @@ $(document).ready(function () {
         score = 0
         $('#score').text(score)
         closeDialog()
-        console.log('new game')
+        current = alterLevel
     })
-
+    $('#level').change(() => {
+         alterLevel = parseInt($('#level').val())
+        if( current === alterLevel){
+            $('#btn-continue').prop('disabled', false)
+            $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
+        }else{
+            $('#btn-continue').prop('disabled', true)
+            $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
+        }
+    })
 })
-
+let current = parseInt($('#level').val())
+let alterLevel
 const I = [
     [
         [0, 0, 0, 0],
@@ -448,8 +458,8 @@ function createCurrentPiece() {
 
 function implementGameOver() {
     gameOver = true
-    $('#btn-start').addClass('disabled-btn').removeClass('has-hover')
-    $('#btn-start').prop('disabled', true)
+    $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
+    $('#btn-continue').prop('disabled', true)
     showNotification('Game Over')
 }
 
@@ -557,12 +567,13 @@ function customDialog() {
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
-    $('<button id="btn-new-game" class="btn new-game has-hover">New Game</button>').appendTo('.bottom-bg')
+    $('<button id="btn-new-game" class="btn  has-hover">New Game</button>').appendTo('.bottom-bg')
+    $('<button id="btn-continue" class="btn has-hover">Continue</button>').appendTo('.bottom-bg')
 }
 
 //chon level
 function chooseLevel() {
-    const level = parseInt($('#level').val())
+    const currentLevel = parseInt($('#level').val())
     switch (level) {
         case 1:
             level_1();
@@ -577,7 +588,7 @@ function chooseLevel() {
         // case 5:
         //     break
         default:
-            alert('not have other level')
             break
     }
+    return currentLevel
 }
