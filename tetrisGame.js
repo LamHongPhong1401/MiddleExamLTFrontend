@@ -5,13 +5,15 @@ $(document).ready(function () {
     $('#btn-start').click(function () {
         const startGame = $('.start-game')
         const beforeStartGame = $('.before-start-game')
-        let btnStartGame = $('#btn-start')
+        const btnStartGame = $('#btn-start')
+        const configuraton = $('.bottom-bg')
+
+        configuraton.hide()
         btnStartGame.text('Restart')
         beforeStartGame.css('display', 'none');
         startGame.css('display', 'flex');
-        dialog()
 
-        let level = parseInt($('#level').val())
+        const level = parseInt($('#level').val())
         switch (level) {
             case 1:
                 level_1();
@@ -30,9 +32,8 @@ $(document).ready(function () {
                 break
         }
 
-        changeLevel()
-
         dropPiece()
+        dialog()
         btnStartGame.click(function () {
             reDrawBoard()
         })
@@ -372,10 +373,12 @@ Piece.prototype.lock = function () {
             // nếu là ô trắng thì bỏ qua
             if (!this.activeTetromino[i][j]) continue;
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
-            if (this.y + j < 0) {
-                alert("game over")
+            if (this.y + i < 0) {
                 gameOver = true
-                break
+
+                showNotification('Game Over')
+                return
+                console.log(j)
             }
             // đặt mảnh xếp khi gặp va chạm
             board[this.y + i][this.x + j] = this.color
@@ -423,7 +426,7 @@ function dropPiece() {
 }
 
 function checkGameOver() {
-    if (piece.y > 0 || currentPiece !== null) {
+    if ((piece.y > 0 || currentPiece !== null) && !gameOver) {
         currentPiece = nextPiece
         let level = parseInt($('#level').val())
         switch (level) {
@@ -439,8 +442,6 @@ function checkGameOver() {
             // case 5:
             //     break
         }
-    } else {
-        gameOver = true
     }
 }
 
@@ -501,48 +502,39 @@ function level_5() {
 
 }
 
-function level_5() {
+function level_6() {
 
 }
 
 // tạo dialog để thông báo
 function dialog() {
-    // Initialize the dialog
-    $("#dialog-message").dialog({
-        autoOpen: false,
-        modal: true,
-        open: function() {
-            $("#overlay").show();
-        },
-        close: function() {
-            $("#overlay").hide();
-        },
-        buttons: {
-            "YES": function () {
-                $(this).dialog("close");
-                console.log("yes")
-                $('[id*=btnYes]').trigger('click');
-                stop = false
-                dropPiece()
+        $("#dialog-message").dialog({
+            autoOpen: false,
+            modal: true,
+            open: function() {
+                $("#overlay").show();
             },
-            "NO": function () {
-                $(this).dialog("close");
-                $('[id*=btnYes]').trigger('click');
-                stop = false
-                dropPiece()
-            },
-        }
-    })
+            close: function() {
+                $("#overlay").hide();
+            }
+        })
 }
 
-function changeLevel() {
-    $("#level").on("keydown", function(event) {
-        if (event.which >= 37 && event.which <= 40) {
-            event.preventDefault();
-        }
-    });
-    $($('#level').change(() => {
-        $("#dialog-message").dialog("open");
-        stop = true
-    }))
+
+function showNotification(text) {
+    customDialog()
+    $('.content-top p').text(text)
+    $("#dialog-message").dialog("open");
+}
+
+// chỉnh sửa dialog
+function customDialog() {
+    const contentContainer = $('.dialog-content-container')
+    if(contentContainer.parent().is('.ui-dialog-content')) return
+    $('<div class="dialog-content-container"></div>').appendTo('.ui-dialog-content')
+    $('<div class="content-top"><p></p></div>').appendTo('.dialog-content-container')
+    $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
+    $('.bottom-bg').appendTo('.content-bottom')
+    $('<button class="new-game">New Game</button>').appendTo('.bottom-bg')
+
 }
