@@ -118,29 +118,30 @@ h1 {
       &:focus { outline: 0; }
     }
   }
-  .btn {
-    display: inline-block;
-    background-color: $color-yellow-light;
-    padding: 15px 40px;
-    border: none;
-    border-radius: 30px;
+}
 
-    font-size: 20px;
-    text-decoration: none;
-    text-transform: uppercase;
-    color: $color-orange-light;
+.btn {
+  display: inline-block;
+  background-color: $color-yellow-light;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 30px;
 
-    box-shadow: 0 3px 0 $color-yellow-light;
-    cursor: pointer;
-    transition: all 100ms linear;
+  font-size: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: $color-orange-light;
 
-    &:hover {
-      @include transform(translateY(-4px));
-      box-shadow: 0 7px 0 $color-orange-light;
-    }
+  box-shadow: 0 3px 0 $color-yellow-light;
+  cursor: pointer;
+  transition: all 100ms linear;
 
-    &:focus { outline: 0; }
+  &:hover {
+    @include transform(translateY(-4px));
+    box-shadow: 0 7px 0 $color-orange-light;
   }
+
+  &:focus { outline: 0; }
 }
 
 .start-game{
@@ -172,6 +173,16 @@ h1 {
       border-radius: 0.2em;
       background-color: white;
       text-align: center;
+    }
+
+    .pause {
+      position: absolute;
+      top: 0;
+      transform: translateY(18em);
+
+      #btn-pause{
+        background-color: white;
+      }
     }
   }
 }
@@ -211,29 +222,13 @@ h1 {
 .ui-dialog-content {
   height: auto;
   background-color: white;
-  color: black;
+  color: red;
   font-size: large;
-}
-
-/* Đổi màu nền của button trong dialog */
-.ui-dialog-buttonset  {
-  width: 100%;
-  height: auto;
-  background-color: black;
-  border-radius: 0 0 0.5em 0.5em ;
- @include middle-custom(flex, end, center);
-  padding: 1em;
+  font-weight: bold;
+  text-align: center;
 
 }
-.ui-button{
-  background-color: white;
-  border-radius: 0.5em;
-  color: $color-orange-light;
-  padding: 0.5em;
-}
-.ui-button:hover{
-  background-color: $color-yellow-light;
-}
+
 #overlay {
   position: fixed;
   top: 0;
