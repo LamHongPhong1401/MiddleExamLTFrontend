@@ -9,7 +9,7 @@ $(document).ready(function () {
         const configuraton = $('.bottom-bg')
 
         configuraton.hide()
-        btnStartGame.text('Restart')
+        btnStartGame.text('Continue')
         beforeStartGame.css('display', 'none');
         startGame.css('display', 'flex');
 
@@ -34,8 +34,14 @@ $(document).ready(function () {
 
         dropPiece()
         dialog()
+        $('#btn-pause').click(() => {
+            showNotification('Pause')
+        })
         btnStartGame.click(function () {
-            reDrawBoard()
+            stop= false
+            $("#overlay").hide();
+            closeDialog()
+            dropPiece()
         })
     });
 })
@@ -378,7 +384,6 @@ Piece.prototype.lock = function () {
 
                 showNotification('Game Over')
                 return
-                console.log(j)
             }
             // đặt mảnh xếp khi gặp va chạm
             board[this.y + i][this.x + j] = this.color
@@ -449,7 +454,7 @@ function checkGameOver() {
 document.addEventListener("keydown", CONTROL)
 
 function CONTROL(event) {
-    if(stop){
+    if (stop) {
         event.preventDefault()
         return
     }
@@ -508,33 +513,38 @@ function level_6() {
 
 // tạo dialog để thông báo
 function dialog() {
-        $("#dialog-message").dialog({
-            autoOpen: false,
-            modal: true,
-            open: function() {
-                $("#overlay").show();
-            },
-            close: function() {
-                $("#overlay").hide();
-            }
-        })
+    $("#dialog-message").dialog({
+        autoOpen: false,
+        modal: true,
+        open: function () {
+            stop = true
+            $("#overlay").show();
+        }
+    })
 }
 
 
 function showNotification(text) {
     customDialog()
-    $('.content-top p').text(text)
+    $('.content-top span').text(text)
     $("#dialog-message").dialog("open");
 }
 
+function closeDialog() {
+    $("#dialog-message").dialog("close");
+}
 // chỉnh sửa dialog
 function customDialog() {
     const contentContainer = $('.dialog-content-container')
-    if(contentContainer.parent().is('.ui-dialog-content')) return
+    if (contentContainer.parent().is('.ui-dialog-content')){
+        $('.bottom-bg').show()
+        return
+    }
     $('<div class="dialog-content-container"></div>').appendTo('.ui-dialog-content')
-    $('<div class="content-top"><p></p></div>').appendTo('.dialog-content-container')
+    $('<div class="content-top"><span></span></div>').appendTo('.dialog-content-container')
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
-    $('<button class="new-game">New Game</button>').appendTo('.bottom-bg')
+    $('.bottom-bg').show()
+    $('<button class="new-game btn">New Game</button>').appendTo('.bottom-bg')
 
 }

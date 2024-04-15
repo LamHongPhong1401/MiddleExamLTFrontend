@@ -196,36 +196,31 @@ h1 {
 }
 
 .ui-dialog {
-  background-color: $color-yellow-light;
+  background-color: rgba(0,0,0,0);
   border-radius: 0.5em;
-  position: relative;
-  height: auto;
-  width: 40%;
-  top: -50%;
-  left: 0;
+  width: 800px !important;
 }
 
 .ui-dialog-titlebar {
-  @include middle-custom(flex, space-between, center);
-  background-color: black;
-  color: $color-green-light;
-  padding: 1em;
-  border-radius: 0.5em 0.5em 0 0;
-
-  .ui-button{
     display: none;
-  }
-
 }
 
-/* Đổi màu chữ của nội dung dialog */
 .ui-dialog-content {
-  height: auto;
-  background-color: white;
-  color: red;
-  font-size: large;
-  font-weight: bold;
-  text-align: center;
+
+  .content-top{
+    @include center-flex('x');
+
+    span{
+      @extend h1;
+      font-size: 7rem ;
+    }
+  }
+  .bottom-bg{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(0, 100%);
+  }
 
 }
 
@@ -235,7 +230,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: none;
 }
 
