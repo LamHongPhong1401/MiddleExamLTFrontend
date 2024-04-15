@@ -10,28 +10,10 @@ $(document).ready(function () {
 
         configuraton.hide()
         btnStartGame.text('Continue')
-        beforeStartGame.css('display', 'none');
-        startGame.css('display', 'flex');
+        beforeStartGame.css('display', 'none')
+        startGame.css('display', 'flex')
 
-        const level = parseInt($('#level').val())
-        switch (level) {
-            case 1:
-                level_1();
-                break
-            case 2:
-                level_2();
-                break
-            // case 3:
-            //     break
-            // case 4:
-            //     break
-            // case 5:
-            //     break
-            default:
-                alert('not have other level')
-                break
-        }
-
+        chooseLevel()
         dropPiece()
         dialog()
     })
@@ -47,6 +29,7 @@ $(document).ready(function () {
     })
     // new game
     $('.bottom-bg').on('click', '#btn-new-game', () => {
+        chooseLevel()
         reDrawBoard()
         score = 0
         $('#score').text(score)
@@ -508,12 +491,16 @@ function drawNextPiece(canvas) {
 }
 
 function level_1() {
+    if( $('.display-suggest').hasClass('suggest')){
+        $('.display-suggest').css('visibility', 'visible')
+        return
+    }
     $('.display-suggest').addClass('suggest');
     $('.display-suggest').find('p').text("Suggest");
 }
 
 function level_2() {
-
+    $('.display-suggest').css('visibility', 'hidden');
 }
 
 function level_3() {
@@ -571,4 +558,26 @@ function customDialog() {
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
     $('<button id="btn-new-game" class="btn new-game has-hover">New Game</button>').appendTo('.bottom-bg')
+}
+
+//chon level
+function chooseLevel() {
+    const level = parseInt($('#level').val())
+    switch (level) {
+        case 1:
+            level_1();
+            break
+        case 2:
+            level_2();
+            break
+        // case 3:
+        //     break
+        // case 4:
+        //     break
+        // case 5:
+        //     break
+        default:
+            alert('not have other level')
+            break
+    }
 }
