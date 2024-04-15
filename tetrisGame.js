@@ -444,7 +444,23 @@ function createCurrentPiece() {
     if (currentPiece === null) return
     if (gameOver) return
     currentPiece = nextPiece
-    drawNextPiece($('#suggest-piece'))
+    const level = parseInt($('#level').val())
+    switch (level) {
+        case 1:
+            drawNextPiece($('#suggest-piece'))
+            break
+        case 2:
+            break
+        // case 3:
+        //     break
+        // case 4:
+        //     break
+        // case 5:
+        //     break
+        default:
+            break
+    }
+
 }
 
 function implementGameOver() {
