@@ -34,16 +34,25 @@ $(document).ready(function () {
 
         dropPiece()
         dialog()
-        $('#btn-pause').click(() => {
-            showNotification('Pause')
-        })
-        btnStartGame.click(function () {
-            stop= false
-            $("#overlay").hide();
-            closeDialog()
-            dropPiece()
-        })
-    });
+    })
+    //pause
+    $('#btn-pause').click(() => {
+        $('#btn-start').addClass('has-hover').removeClass('disabled-btn')
+        showNotification('Pause')
+    })
+    //continue
+    $('#btn-start').click(function () {
+        closeDialog()
+    })
+    // new game
+    $('.bottom-bg').on('click', '#btn-new-game', () => {
+        reDrawBoard()
+        score = 0
+        $('#score').text(score)
+        closeDialog()
+        console.log('new game')
+    })
+
 })
 
 const I = [
@@ -228,6 +237,8 @@ for (let i = 0; i < ROWS; i++) {
 }
 
 function reDrawBoard() {
+    nextPiece = randomPiece()
+    piece = randomPiece()
     for (let i = 0; i < ROWS; i++) {
         for (let j = 0; j < COLUMNS; j++) {
             drawSquare(j, i, board[i][j] = colorEmptySquare)
@@ -380,9 +391,7 @@ Piece.prototype.lock = function () {
             if (!this.activeTetromino[i][j]) continue;
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
             if (this.y + i < 0) {
-                gameOver = true
-
-                showNotification('Game Over')
+                implementGameOver()
                 return
             }
             // đặt mảnh xếp khi gặp va chạm
@@ -421,7 +430,7 @@ let gameOver = false
 function dropPiece() {
     let now = Date.now()
     let delta = now - startDrop
-    checkGameOver()
+    createCurrentPiece()
     if (delta > 1000) {
         piece.moveDown()
         startDrop = Date.now()
@@ -430,24 +439,18 @@ function dropPiece() {
     if (!gameOver && !stop) requestAnimationFrame(dropPiece)
 }
 
-function checkGameOver() {
-    if ((piece.y > 0 || currentPiece !== null) && !gameOver) {
-        currentPiece = nextPiece
-        let level = parseInt($('#level').val())
-        switch (level) {
-            case 1:
-                drawNextPiece($('#suggest-piece'))
-                break
-            case 2:
-                break
-            // case 3:
-            //     break
-            // case 4:
-            //     break
-            // case 5:
-            //     break
-        }
-    }
+function createCurrentPiece() {
+    if (piece.y < 0) return
+    if (currentPiece === null) return
+    if (gameOver) return
+    currentPiece = nextPiece
+    drawNextPiece($('#suggest-piece'))
+}
+
+function implementGameOver() {
+    gameOver = true
+    $('#btn-start').addClass('disabled-btn').removeClass('has-hover')
+    showNotification('Game Over')
 }
 
 // điều khiển mảnh xếp
@@ -493,6 +496,7 @@ function level_1() {
 }
 
 function level_2() {
+
 }
 
 function level_3() {
@@ -523,7 +527,6 @@ function dialog() {
     })
 }
 
-
 function showNotification(text) {
     customDialog()
     $('.content-top span').text(text)
@@ -532,11 +535,16 @@ function showNotification(text) {
 
 function closeDialog() {
     $("#dialog-message").dialog("close");
+    stop = false
+    gameOver = false
+    $("#overlay").hide();
+    dropPiece()
 }
+
 // chỉnh sửa dialog
 function customDialog() {
     const contentContainer = $('.dialog-content-container')
-    if (contentContainer.parent().is('.ui-dialog-content')){
+    if (contentContainer.parent().is('.ui-dialog-content')) {
         $('.bottom-bg').show()
         return
     }
@@ -545,6 +553,5 @@ function customDialog() {
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
-    $('<button class="new-game btn">New Game</button>').appendTo('.bottom-bg')
-
+    $('<button id="btn-new-game" class="btn new-game has-hover">New Game</button>').appendTo('.bottom-bg')
 }
