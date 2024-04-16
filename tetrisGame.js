@@ -19,12 +19,13 @@ $(document).ready(function () {
     })
     //pause
     $('#btn-pause').click(() => {
+        showNotification('Pause')
         $('#btn-continue').prop('disabled', false)
         $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
-        showNotification('Pause')
+
     })
     //continue
-    $('#btn-continue').on('click', '#btn-pause',function () {
+    $('.bottom-bg').on('click', '#btn-continue',function () {
         closeDialog()
     })
     // new game
@@ -34,11 +35,11 @@ $(document).ready(function () {
         score = 0
         $('#score').text(score)
         closeDialog()
-        current = alterLevel
+        currentLevel = alterLevel
     })
     $('#level').change(() => {
          alterLevel = parseInt($('#level').val())
-        if( current === alterLevel){
+        if( currentLevel === alterLevel){
             $('#btn-continue').prop('disabled', false)
             $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
         }else{
@@ -47,7 +48,7 @@ $(document).ready(function () {
         }
     })
 })
-let current = parseInt($('#level').val())
+let currentLevel = parseInt($('#level').val())
 let alterLevel
 const I = [
     [
@@ -202,7 +203,6 @@ const Z = [
 
 const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
-const scoreElement = document.getElementById("score");
 
 const colorEmptySquare = "WHITE";
 const COLUMNS = 10;
@@ -414,7 +414,7 @@ Piece.prototype.lock = function () {
     // cập nhật lại bảng
     drawBroad()
 
-    scoreElement.innerHTML = score
+    $('#score').text(score)
 }
 
 // di chuyển mảnh xếp mỗi giây
@@ -436,6 +436,7 @@ function dropPiece() {
 function createCurrentPiece() {
     if (gameOver) return
     if (piece.y < 0) return
+    if(currentPiece === null) return
     currentPiece = nextPiece
     const level = parseInt($('#level').val())
     switch (level) {
@@ -458,9 +459,9 @@ function createCurrentPiece() {
 
 function implementGameOver() {
     gameOver = true
+    showNotification('Game Over')
     $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
     $('#btn-continue').prop('disabled', true)
-    showNotification('Game Over')
 }
 
 // điều khiển mảnh xếp
@@ -574,7 +575,7 @@ function customDialog() {
 //chon level
 function chooseLevel() {
     const currentLevel = parseInt($('#level').val())
-    switch (level) {
+    switch (currentLevel) {
         case 1:
             level_1();
             break
@@ -590,5 +591,4 @@ function chooseLevel() {
         default:
             break
     }
-    return currentLevel
 }
