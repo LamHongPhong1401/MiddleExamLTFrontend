@@ -48,8 +48,44 @@ $(document).ready(function () {
         }
     })
 })
+
+$(document).on("keydown", function(event) {
+    // Kiểm tra nếu mã phím là 27 (mã phím cho phím Esc)
+    if (event.keyCode === 27) {
+        if (checkPauseKeydown) {
+            $('#btn-pause').trigger('click')
+            checkPauseKeydown = false
+            console.log('Checking: ' +checkPauseKeydown)
+        }else {
+            closeDialog()
+            checkPauseKeydown = true
+            console.log('Checking: ' +checkPauseKeydown)
+        }
+    }
+
+    if (stop) {
+        event.preventDefault()
+        return
+    }
+
+    if (event.keyCode == 37) {
+        piece.moveLeft()
+        startDrop = Date.now()
+    } else if (event.keyCode == 38) {
+        piece.rotato()
+        startDrop = Date.now()
+    } else if (event.keyCode == 39) {
+        piece.moveRight()
+        startDrop = Date.now()
+    } else {
+        piece.moveDown()
+    }
+});
+
 let currentLevel = parseInt($('#level').val())
 let alterLevel
+// check pause game by keydown
+let checkPauseKeydown = true
 const I = [
     [
         [0, 0, 0, 0],
@@ -250,7 +286,7 @@ function drawBroad() {
     }
 }
 
-drawBroad()
+
 
 // Tạo đối tượng mảnh
 function Piece(tetromino, color) {
@@ -464,28 +500,6 @@ function implementGameOver() {
     $('#btn-continue').prop('disabled', true)
 }
 
-// điều khiển mảnh xếp
-document.addEventListener("keydown", CONTROL)
-
-function CONTROL(event) {
-    if (stop) {
-        event.preventDefault()
-        return
-    }
-    if (event.keyCode == 37) {
-        piece.moveLeft()
-        startDrop = Date.now()
-    } else if (event.keyCode == 38) {
-        piece.rotato()
-        startDrop = Date.now()
-    } else if (event.keyCode == 39) {
-        piece.moveRight()
-        startDrop = Date.now()
-    } else {
-        piece.moveDown()
-    }
-}
-
 function drawNextPiece(canvas) {
     let draw = canvas.get(0).getContext('2d')
     draw.clearRect(0, 0, 100, 100)
@@ -577,9 +591,11 @@ function chooseLevel() {
     const currentLevel = parseInt($('#level').val())
     switch (currentLevel) {
         case 1:
+            drawBroad()
             level_1();
             break
         case 2:
+            drawBroad()
             level_2();
             break
         // case 3:
