@@ -13,9 +13,11 @@ $(document).ready(function () {
         beforeStartGame.css('display', 'none')
         startGame.css('display', 'flex')
 
+        currentLevel = parseInt($('#level').val())
+
+        drawBroad()
         chooseLevel()
         dropPiece()
-        dialog()
     })
     //pause
     $('#btn-pause').click(() => {
@@ -25,41 +27,44 @@ $(document).ready(function () {
 
     })
     //continue
-    $('.bottom-bg').on('click', '#btn-continue',function () {
+    $('.bottom-bg').on('click', '#btn-continue', function () {
         closeDialog()
     })
     // new game
     $('.bottom-bg').on('click', '#btn-new-game', () => {
-        chooseLevel()
         reDrawBoard()
+        level3Flag = false
         score = 0
         $('#score').text(score)
         closeDialog()
         currentLevel = alterLevel
+        chooseLevel()
     })
     $('#level').change(() => {
-         alterLevel = parseInt($('#level').val())
-        if( currentLevel === alterLevel){
+        alterLevel = parseInt($('#level').val())
+        if (currentLevel === alterLevel) {
             $('#btn-continue').prop('disabled', false)
             $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
-        }else{
+        } else {
             $('#btn-continue').prop('disabled', true)
             $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
         }
     })
+
+    dialog()
 })
 
-$(document).on("keydown", function(event) {
+$(document).on("keydown", function (event) {
     // Kiểm tra nếu mã phím là 27 (mã phím cho phím Esc)
     if (event.keyCode === 27) {
         if (checkPauseKeydown) {
             $('#btn-pause').trigger('click')
             checkPauseKeydown = false
-            console.log('Checking: ' +checkPauseKeydown)
-        }else {
+            console.log('Checking: ' + checkPauseKeydown)
+        } else {
             closeDialog()
             checkPauseKeydown = true
-            console.log('Checking: ' +checkPauseKeydown)
+            console.log('Checking: ' + checkPauseKeydown)
         }
     }
 
@@ -82,7 +87,7 @@ $(document).on("keydown", function(event) {
     }
 });
 
-let currentLevel = parseInt($('#level').val())
+let currentLevel
 let alterLevel
 // check pause game by keydown
 let checkPauseKeydown = true
@@ -287,7 +292,6 @@ function drawBroad() {
 }
 
 
-
 // Tạo đối tượng mảnh
 function Piece(tetromino, color) {
     this.tetromino = tetromino; // một mảng cac mẫu của mảnh xếp
@@ -311,13 +315,13 @@ Piece.prototype.fill = function (color) {
 
 // the pieces and their colors
 const PIECES = [
-    [Z, "green"],
-    [L, "purple"],
-    [I, "orange"],
-    [S, "red"],
-    [T, "yellow"],
-    [O, "blue"],
-    [J, "cyan"]
+    [Z, "GREEN"],
+    [L, "PURPLE"],
+    [I, "ORANGE"],
+    [S, "RED"],
+    [T, "YELLOW"],
+    [O, "BLUE"],
+    [J, "CYAN"]
 ];
 
 // Hàm tạo mảnh rơi ngẫu nhiên
@@ -354,8 +358,8 @@ Piece.prototype.collision = function (x, y, piece) {
             if (newX < 0 || newX >= COLUMNS || newY >= ROWS) return true;
             // nếu newY < 0 thì board[-y][x], bỏ qua nơi mảnh xếp rơi xuống
             if (newY < 0) continue;
-            // Kiểm tra đã có piece ở chỗ đó hay ch
-            if (board[newY][newX] != colorEmptySquare) return true;
+            // Kiểm tra đã có piece ở chỗ đó hay chua
+            if (board[newY][newX] !== colorEmptySquare) return true;
         }
     }
     return false;
@@ -420,7 +424,7 @@ Piece.prototype.lock = function () {
             // nếu là ô trắng thì bỏ qua
             if (!this.activeTetromino[i][j]) continue;
             // nếu màu tràn bảng theo chiều dọc thì kết thúc game
-            if (this.y + i < 0) {
+            if (this.y + i <= 0) {
                 implementGameOver()
                 return
             }
@@ -432,7 +436,7 @@ Piece.prototype.lock = function () {
     for (let i = 0; i < ROWS; i++) {
         let isFullRow = true
         for (let j = 0; j < COLUMNS; j++) {
-            isFullRow = isFullRow && (board[i][j] != colorEmptySquare)
+            isFullRow = isFullRow && (board[i][j] !== colorEmptySquare)
         }
         // nếu có hàng đã đầy thì dời các hàng ở trên xuống dưới một vị trí và cộng điểm
         if (isFullRow) {
@@ -472,7 +476,7 @@ function dropPiece() {
 function createCurrentPiece() {
     if (gameOver) return
     if (piece.y < 0) return
-    if(currentPiece === null) return
+    if (currentPiece === null) return
     currentPiece = nextPiece
     const level = parseInt($('#level').val())
     switch (level) {
@@ -481,8 +485,8 @@ function createCurrentPiece() {
             break
         case 2:
             break
-        // case 3:
-        //     break
+        case 3:
+            break
         // case 4:
         //     break
         // case 5:
@@ -516,8 +520,8 @@ function drawNextPiece(canvas) {
 }
 
 function level_1() {
-    if( $('.display-suggest').hasClass('suggest')){
-        $('.display-suggest').css('visibility', 'visible')
+    $('.display-suggest').css('visibility', 'visible')
+    if ($('.display-suggest').hasClass('suggest')) {
         return
     }
     $('.display-suggest').addClass('suggest');
@@ -529,7 +533,8 @@ function level_2() {
 }
 
 function level_3() {
-
+    level_2()
+    drawObstacles()
 }
 
 function level_4() {
@@ -591,15 +596,14 @@ function chooseLevel() {
     const currentLevel = parseInt($('#level').val())
     switch (currentLevel) {
         case 1:
-            drawBroad()
             level_1();
             break
         case 2:
-            drawBroad()
             level_2();
             break
-        // case 3:
-        //     break
+        case 3:
+            level_3()
+            break
         // case 4:
         //     break
         // case 5:
@@ -607,4 +611,31 @@ function chooseLevel() {
         default:
             break
     }
+}
+
+// biến nhận biết đang ở level 3
+ let level3Flag = false
+function drawObstacles() {
+    if (level3Flag) return
+    for (let i = 0; i < 5; i++) {
+        const obstacle = randomObstacle()
+        // chướng ngại vật không nằm ở 2 hàng đầu và 2 hàng cuối
+        if(obstacle.x < 2 || obstacle.x > 17){
+            i--
+            continue
+        }
+        drawSquare(obstacle.y, obstacle.x,board[obstacle.x][obstacle.y] = 'GRAY')
+    }
+    level3Flag = true
+}
+
+function Obstacle(x, y) {
+    this.x = x
+    this.y = y
+}
+
+function randomObstacle() {
+    const x = Math.floor(Math.random() * ROWS)
+    const y = Math.floor(Math.random() *  COLUMNS)
+    return new Obstacle(x, y)
 }
