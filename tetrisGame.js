@@ -472,7 +472,8 @@ function drawObstacles() {
     let count = 0
     let setIntervalID =  setInterval(function () {
         let obstacle = randomObstacle()
-        obstacle = obstacle.x < 2? randomObstacle() : obstacle
+        // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
+        obstacle = (obstacle.x < 2 || board[obstacle.x][obstacle.y] !== colorEmptySquare) ? randomObstacle() : obstacle
         drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = 'GRAY')
         count++
         if(count >= 5) clearInterval(setIntervalID)
