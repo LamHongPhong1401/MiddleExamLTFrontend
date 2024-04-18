@@ -466,19 +466,17 @@ function chooseLevel() {
             break
     }
 }
-let count = 0
+// Tạo 1 chướng ngại vật xuất hiện sau mỗi 3 giây ngâu nhiên (tối đa 5 obstacles)
+
 function drawObstacles() {
+    let count = 0
     let setIntervalID =  setInterval(function () {
         let obstacle = randomObstacle()
-        if(obstacle.x < 2) {
-            obstacle = randomObstacle()
-        }
+        obstacle = obstacle.x < 2? randomObstacle() : obstacle
         drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = 'GRAY')
         count++
-        console.log(count)
-        if(count >= 10) clearInterval(setIntervalID)
-    }, 1000)
-
+        if(count >= 5) clearInterval(setIntervalID)
+    }, 3000)
 }
 
 function Obstacle(x, y) {
@@ -486,26 +484,26 @@ function Obstacle(x, y) {
     this.y = y
 }
 
-Obstacle.prototype.unDraw = function () {
-    drawSquare(this.y, this.x, colorEmptySquare)
-}
-
-Obstacle.prototype.draw = function () {
-    drawSquare(this.y, this.x, 'GRAY')
-}
-
-Obstacle.prototype.collisionObstacle = function (y) {
-    return board[this.x][this.y + y] !== colorEmptySquare;
-}
-
-Obstacle.prototype.moveObstacle = function() {
-    if(!this.collisionObstacle(1)){
-        this.unDraw()
-        this.y += 1
-        this.draw()
-    }
-
-}
+// Obstacle.prototype.unDraw = function () {
+//     drawSquare(this.y, this.x, colorEmptySquare)
+// }
+//
+// Obstacle.prototype.draw = function () {
+//     drawSquare(this.y, this.x, 'GRAY')
+// }
+//
+// Obstacle.prototype.collisionObstacle = function (y) {
+//     return board[this.x][this.y + y] !== colorEmptySquare;
+// }
+//
+// Obstacle.prototype.moveObstacle = function() {
+//     if(!this.collisionObstacle(1)){
+//         this.unDraw()
+//         this.y += 1
+//         this.draw()
+//     }
+//
+// }
 
 // x,y la cot, dong
 function randomObstacle() {
