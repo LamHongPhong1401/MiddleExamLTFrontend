@@ -33,7 +33,6 @@ $(document).ready(function () {
     // new game
     $('.bottom-bg').on('click', '#btn-new-game', () => {
         reDrawBoard()
-        level3Flag = false
         score = 0
         $('#score').text(score)
         closeDialog()
@@ -87,7 +86,6 @@ $(document).on("keydown", function (event) {
 
 let currentLevel
 let alterLevel
-let yDirection = 1
 // check pause game by keydown
 let checkPauseKeydown = true
 const I = [[[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0],], [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0],], [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0],], [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0],]];
@@ -116,10 +114,6 @@ let stop = false
 let score = 0;
 
 // biến nhận biết đang ở level 3
-let level3Flag = false
-
-let counter = 0
-
 
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
@@ -393,14 +387,13 @@ function level_2() {
 }
 
 function level_3() {
-    obstacleList = obstacles()
     level_2()
     drawObstacles()
 }
 
 function level_4() {
-    level_3()
-    moveOb()
+    level_2()
+    drawObstacles()
 }
 
 function level_5() {
@@ -431,8 +424,6 @@ function closeDialog() {
     $("#dialog-message").dialog("close");
     stop = false
     gameOver = false
-    level3Flag = false
-    stopObstacle = false
     $("#overlay").hide();
     dropPiece()
 }
@@ -475,27 +466,19 @@ function chooseLevel() {
             break
     }
 }
-
-
+let count = 0
 function drawObstacles() {
-    if (level3Flag) return
-    for (let i = 0; i < 5; i++) {
-        drawSquare(obstacleList[i].y, obstacleList[i].x, board[obstacleList[i].x][obstacleList[i].y] = 'GRAY')
-    }
-    level3Flag = true
-}
-
-function obstacles() {
-    const obstacles = []
-    for (let i = 0; i < 5; i++) {
-        obstacles[i] = randomObstacle()
-        // chướng ngại vật không nằm ở 2 hàng đầu và 2 hàng cuối
-        if (obstacles[i].x < 2 || obstacles[i].x > 17) {
-            i--
-            continue
+    let setIntervalID =  setInterval(function () {
+        let obstacle = randomObstacle()
+        if(obstacle.x < 2) {
+            obstacle = randomObstacle()
         }
-    }
-    return obstacles
+        drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = 'GRAY')
+        count++
+        console.log(count)
+        if(count >= 10) clearInterval(setIntervalID)
+    }, 1000)
+
 }
 
 function Obstacle(x, y) {
@@ -512,14 +495,16 @@ Obstacle.prototype.draw = function () {
 }
 
 Obstacle.prototype.collisionObstacle = function (y) {
-    return board[this.x][this.y + y] === colorEmptySquare;
+    return board[this.x][this.y + y] !== colorEmptySquare;
 }
 
-Obstacle.prototype.moveObstacle = () => {
-    yDirection = this.collisionObstacle(yDirection) ? yDirection : -yDirection
-    this.unDraw()
-    this.y += yDirection
-    this.draw()
+Obstacle.prototype.moveObstacle = function() {
+    if(!this.collisionObstacle(1)){
+        this.unDraw()
+        this.y += 1
+        this.draw()
+    }
+
 }
 
 // x,y la cot, dong
@@ -527,21 +512,4 @@ function randomObstacle() {
     const x = Math.floor(Math.random() * ROWS)
     const y = Math.floor(Math.random() * COLUMNS)
     return new Obstacle(x, y)
-}
-
-let obstacleList = obstacles()
-let stopObstacle = false // dùng để ngưng các chướng ngại vật khi exits game
-let timeInterval = 1000
-const [ob1, ob2, ob3, ob4, ob5] = obstacleList
-
-function moveOb() {
-
-    if (stopObstacle) timeInterval = 30000
-    setInterval(function () {
-        ob1.moveObstacle()
-        ob2.moveObstacle()
-        ob3.moveObstacle()
-        ob4.moveObstacle()
-        ob5.moveObstacle()
-    }, timeInterval)
 }
