@@ -24,7 +24,7 @@ $(document).ready(function () {
         showNotification('Pause')
         $('#btn-continue').prop('disabled', false)
         $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
-
+        stopObstacle = true
     })
     //continue
     $('.bottom-bg').on('click', '#btn-continue', function () {
@@ -60,11 +60,9 @@ $(document).on("keydown", function (event) {
         if (checkPauseKeydown) {
             $('#btn-pause').trigger('click')
             checkPauseKeydown = false
-            console.log('Checking: ' + checkPauseKeydown)
         } else {
             closeDialog()
             checkPauseKeydown = true
-            console.log('Checking: ' + checkPauseKeydown)
         }
     }
 
@@ -89,158 +87,22 @@ $(document).on("keydown", function (event) {
 
 let currentLevel
 let alterLevel
+let yDirection = 1
 // check pause game by keydown
 let checkPauseKeydown = true
-const I = [
-    [
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-    ],
-    [
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-    ],
-    [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-    ],
-    [
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-    ]
-];
+const I = [[[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0],], [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0],], [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0],], [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0],]];
 
-const J = [
-    [
-        [1, 0, 0],
-        [1, 1, 1],
-        [0, 0, 0]
-    ],
-    [
-        [0, 1, 1],
-        [0, 1, 0],
-        [0, 1, 0]
-    ],
-    [
-        [0, 0, 0],
-        [1, 1, 1],
-        [0, 0, 1]
-    ],
-    [
-        [0, 1, 0],
-        [0, 1, 0],
-        [1, 1, 0]
-    ]
-];
+const J = [[[1, 0, 0], [1, 1, 1], [0, 0, 0]], [[0, 1, 1], [0, 1, 0], [0, 1, 0]], [[0, 0, 0], [1, 1, 1], [0, 0, 1]], [[0, 1, 0], [0, 1, 0], [1, 1, 0]]];
 
-const L = [
-    [
-        [0, 0, 1],
-        [1, 1, 1],
-        [0, 0, 0]
-    ],
-    [
-        [0, 1, 0],
-        [0, 1, 0],
-        [0, 1, 1]
-    ],
-    [
-        [0, 0, 0],
-        [1, 1, 1],
-        [1, 0, 0]
-    ],
-    [
-        [1, 1, 0],
-        [0, 1, 0],
-        [0, 1, 0]
-    ]
-];
+const L = [[[0, 0, 1], [1, 1, 1], [0, 0, 0]], [[0, 1, 0], [0, 1, 0], [0, 1, 1]], [[0, 0, 0], [1, 1, 1], [1, 0, 0]], [[1, 1, 0], [0, 1, 0], [0, 1, 0]]];
 
-const O = [
-    [
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-    ]
-];
+const O = [[[0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0],]];
 
-const S = [
-    [
-        [0, 1, 1],
-        [1, 1, 0],
-        [0, 0, 0]
-    ],
-    [
-        [0, 1, 0],
-        [0, 1, 1],
-        [0, 0, 1]
-    ],
-    [
-        [0, 0, 0],
-        [0, 1, 1],
-        [1, 1, 0]
-    ],
-    [
-        [1, 0, 0],
-        [1, 1, 0],
-        [0, 1, 0]
-    ]
-];
+const S = [[[0, 1, 1], [1, 1, 0], [0, 0, 0]], [[0, 1, 0], [0, 1, 1], [0, 0, 1]], [[0, 0, 0], [0, 1, 1], [1, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]];
 
-const T = [
-    [
-        [0, 1, 0],
-        [1, 1, 1],
-        [0, 0, 0]
-    ],
-    [
-        [0, 1, 0],
-        [0, 1, 1],
-        [0, 1, 0]
-    ],
-    [
-        [0, 0, 0],
-        [1, 1, 1],
-        [0, 1, 0]
-    ],
-    [
-        [0, 1, 0],
-        [1, 1, 0],
-        [0, 1, 0]
-    ]
-];
+const T = [[[0, 1, 0], [1, 1, 1], [0, 0, 0]], [[0, 1, 0], [0, 1, 1], [0, 1, 0]], [[0, 0, 0], [1, 1, 1], [0, 1, 0]], [[0, 1, 0], [1, 1, 0], [0, 1, 0]]];
 
-const Z = [
-    [
-        [1, 1, 0],
-        [0, 1, 1],
-        [0, 0, 0]
-    ],
-    [
-        [0, 0, 1],
-        [0, 1, 1],
-        [0, 1, 0]
-    ],
-    [
-        [0, 0, 0],
-        [1, 1, 0],
-        [0, 1, 1]
-    ],
-    [
-        [0, 1, 0],
-        [1, 1, 0],
-        [1, 0, 0]
-    ]
-];
+const Z = [[[1, 1, 0], [0, 1, 1], [0, 0, 0]], [[0, 0, 1], [0, 1, 1], [0, 1, 0]], [[0, 0, 0], [1, 1, 0], [0, 1, 1]], [[0, 1, 0], [1, 1, 0], [1, 0, 0]]];
 
 const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
@@ -252,6 +114,12 @@ const squareSize = 20;
 
 let stop = false
 let score = 0;
+
+// biến nhận biết đang ở level 3
+let level3Flag = false
+
+let counter = 0
+
 
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
@@ -314,15 +182,7 @@ Piece.prototype.fill = function (color) {
 }
 
 // the pieces and their colors
-const PIECES = [
-    [Z, "GREEN"],
-    [L, "PURPLE"],
-    [I, "ORANGE"],
-    [S, "RED"],
-    [T, "YELLOW"],
-    [O, "BLUE"],
-    [J, "CYAN"]
-];
+const PIECES = [[Z, "GREEN"], [L, "PURPLE"], [I, "ORANGE"], [S, "RED"], [T, "YELLOW"], [O, "BLUE"], [J, "CYAN"]];
 
 // Hàm tạo mảnh rơi ngẫu nhiên
 function randomPiece() {
@@ -372,8 +232,7 @@ Piece.prototype.rotato = function () {
     // kiểm tra mẫu xoay kế tiếp có va chạm hay không
     if (this.collision(0, 0, nextPattern)) {
         if (this.x < COLUMNS / 2) kich = 1 // dời mảnh xếp sang phải một vị trí
-        else
-            kich = -1 // dời mảnh xếp sang trái một vị trí
+        else kich = -1 // dời mảnh xếp sang trái một vị trí
     }
     // nếu mẫu kế tiếp của mảnh xếp không xảy ra va chạm
     if (!this.collision(kich, 0, nextPattern)) {
@@ -499,6 +358,7 @@ function createCurrentPiece() {
 
 function implementGameOver() {
     gameOver = true
+    stopObstacle = true
     showNotification('Game Over')
     $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
     $('#btn-continue').prop('disabled', true)
@@ -533,12 +393,14 @@ function level_2() {
 }
 
 function level_3() {
+    obstacleList = obstacles()
     level_2()
     drawObstacles()
 }
 
 function level_4() {
-
+    level_3()
+    moveOb()
 }
 
 function level_5() {
@@ -552,9 +414,7 @@ function level_6() {
 // tạo dialog để thông báo
 function dialog() {
     $("#dialog-message").dialog({
-        autoOpen: false,
-        modal: true,
-        open: function () {
+        autoOpen: false, modal: true, open: function () {
             stop = true
             $("#overlay").show();
         }
@@ -571,6 +431,8 @@ function closeDialog() {
     $("#dialog-message").dialog("close");
     stop = false
     gameOver = false
+    level3Flag = false
+    stopObstacle = false
     $("#overlay").hide();
     dropPiece()
 }
@@ -604,8 +466,9 @@ function chooseLevel() {
         case 3:
             level_3()
             break
-        // case 4:
-        //     break
+        case 4:
+            level_4()
+            break
         // case 5:
         //     break
         default:
@@ -613,20 +476,26 @@ function chooseLevel() {
     }
 }
 
-// biến nhận biết đang ở level 3
- let level3Flag = false
+
 function drawObstacles() {
     if (level3Flag) return
     for (let i = 0; i < 5; i++) {
-        const obstacle = randomObstacle()
+        drawSquare(obstacleList[i].y, obstacleList[i].x, board[obstacleList[i].x][obstacleList[i].y] = 'GRAY')
+    }
+    level3Flag = true
+}
+
+function obstacles() {
+    const obstacles = []
+    for (let i = 0; i < 5; i++) {
+        obstacles[i] = randomObstacle()
         // chướng ngại vật không nằm ở 2 hàng đầu và 2 hàng cuối
-        if(obstacle.x < 2 || obstacle.x > 17){
+        if (obstacles[i].x < 2 || obstacles[i].x > 17) {
             i--
             continue
         }
-        drawSquare(obstacle.y, obstacle.x,board[obstacle.x][obstacle.y] = 'GRAY')
     }
-    level3Flag = true
+    return obstacles
 }
 
 function Obstacle(x, y) {
@@ -634,8 +503,45 @@ function Obstacle(x, y) {
     this.y = y
 }
 
+Obstacle.prototype.unDraw = function () {
+    drawSquare(this.y, this.x, colorEmptySquare)
+}
+
+Obstacle.prototype.draw = function () {
+    drawSquare(this.y, this.x, 'GRAY')
+}
+
+Obstacle.prototype.collisionObstacle = function (y) {
+    return board[this.x][this.y + y] === colorEmptySquare;
+}
+
+Obstacle.prototype.moveObstacle = () => {
+    yDirection = this.collisionObstacle(yDirection) ? yDirection : -yDirection
+    this.unDraw()
+    this.y += yDirection
+    this.draw()
+}
+
+// x,y la cot, dong
 function randomObstacle() {
     const x = Math.floor(Math.random() * ROWS)
-    const y = Math.floor(Math.random() *  COLUMNS)
+    const y = Math.floor(Math.random() * COLUMNS)
     return new Obstacle(x, y)
+}
+
+let obstacleList = obstacles()
+let stopObstacle = false // dùng để ngưng các chướng ngại vật khi exits game
+let timeInterval = 1000
+const [ob1, ob2, ob3, ob4, ob5] = obstacleList
+
+function moveOb() {
+
+    if (stopObstacle) timeInterval = 30000
+    setInterval(function () {
+        ob1.moveObstacle()
+        ob2.moveObstacle()
+        ob3.moveObstacle()
+        ob4.moveObstacle()
+        ob5.moveObstacle()
+    }, timeInterval)
 }
