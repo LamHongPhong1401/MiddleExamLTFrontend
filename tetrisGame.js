@@ -107,7 +107,7 @@ const Z = [[[1, 1, 0], [0, 1, 1], [0, 0, 0]], [[0, 0, 1], [0, 1, 1], [0, 1, 0]],
 const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
 
-const colorEmptySquare = "WHITE";
+const WHITE = "WHITE";
 const GRAY = 'GRAY'
 const COLUMNS = 10;
 const ROWS = 20;
@@ -132,7 +132,7 @@ let board = [];
 for (let i = 0; i < ROWS; i++) {
     board[i] = [];
     for (let j = 0; j < COLUMNS; j++) {
-        board[i][j] = colorEmptySquare;
+        board[i][j] = WHITE;
     }
 }
 
@@ -141,7 +141,7 @@ function reDrawBoard() {
     piece = randomPiece()
     for (let i = 0; i < ROWS; i++) {
         for (let j = 0; j < COLUMNS; j++) {
-            drawSquare(j, i, board[i][j] = colorEmptySquare)
+            drawSquare(j, i, board[i][j] = WHITE)
             piece.y = -2
         }
     }
@@ -199,7 +199,7 @@ Piece.prototype.drawPiece = function () {
 
 // hủy tô màu một mảnh
 Piece.prototype.unDrawPiece = function () {
-    this.fill(colorEmptySquare)
+    this.fill(WHITE)
 }
 
 //hàm xử lý va chạm
@@ -216,7 +216,7 @@ Piece.prototype.collision = function (x, y, piece) {
             // nếu newY < 0 thì board[-y][x], bỏ qua nơi mảnh xếp rơi xuống
             if (newY < 0) continue;
             // Kiểm tra đã có piece ở chỗ đó hay chua
-            if (board[newY][newX] !== colorEmptySquare) return true;
+            if (board[newY][newX] !== WHITE) return true;
         }
     }
     return false;
@@ -292,17 +292,22 @@ Piece.prototype.lock = function () {
     for (let i = 0; i < ROWS; i++) {
         let isFullRow = true
         for (let j = 0; j < COLUMNS; j++) {
-            isFullRow = isFullRow && (board[i][j] !== colorEmptySquare)
+            isFullRow = isFullRow && (board[i][j] !== WHITE)
         }
         // nếu có hàng đã đầy thì dời các hàng ở trên xuống dưới một vị trí và cộng điểm
         if (isFullRow) {
             for (let y = i; y > 1; y--) {
                 for (let j = 0; j < COLUMNS; j++) {
+                    if(board[y - 1][j] === GRAY ) {
+                        board[y][j] = WHITE
+                        continue
+                    }
+                    if(board[y][j] === GRAY) continue
                     board[y][j] = board[y - 1][j]
                 }
             }
             for (let j = 0; j < COLUMNS; j++) {
-                board[0][j] = colorEmptySquare
+                board[0][j] = WHITE
             }
             score += 10
         }
@@ -476,17 +481,6 @@ function drawObstacles(num) {
     let count = 0
     let setIntervalID = setInterval(function () {
         let obstacle = randomObstacle()
-        let initialization = true
-        // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
-        while(initialization){
-            if(obstacle.x < 2 || obstacle.x > 17 || board[obstacle.x][obstacle.y] !== colorEmptySquare) {
-                initialization = true
-                obstacle = randomObstacle()
-            }else {
-                initialization = false
-            }
-
-        }
 
         obstacles.push(obstacle)
         drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = GRAY)
@@ -501,15 +495,16 @@ function Obstacle(x, y) {
 }
 
 Obstacle.prototype.unDraw = function () {
-    drawSquare(this.y, this.x, colorEmptySquare)
+    drawSquare(this.y, this.x, WHITE)
 }
 
 Obstacle.prototype.draw = function () {
     drawSquare(this.y, this.x, GRAY)
 }
 
-Obstacle.prototype.collisionObstacle = function (x, y) {
-    return board[this.x + x][this.y + y] !== colorEmptySquare;
+Obstacle.prototype.checkObstacle = function (x) {
+    if(this.x + x === ROWS) return false
+    return board[this.x + x][this.y] === GRAY
 }
 
 Obstacle.prototype.moveObstacle = function (direction) {
@@ -520,8 +515,20 @@ Obstacle.prototype.moveObstacle = function (direction) {
 
 // x,y la cot, dong
 function randomObstacle() {
-    const x = Math.floor(Math.random() * ROWS)
-    const y = Math.floor(Math.random() * COLUMNS)
+    let x = Math.floor(Math.random() * ROWS)
+    let y = Math.floor(Math.random() * COLUMNS)
+    let initialization = true
+    // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
+    while(initialization){
+        if (x < 2 || x > 17 || board[x][y] !== WHITE) {
+             x = Math.floor(Math.random() * ROWS)
+             y = Math.floor(Math.random() * COLUMNS)
+            initialization = true
+        } else {
+            initialization = false
+        }
+
+    }
     return new Obstacle(x, y)
 }
 function deleteSquare() {
@@ -530,7 +537,6 @@ function deleteSquare() {
     setInterval(function () {
         // tam dung event
         if (obstacles.length < 3 && !dropObstacle) return
-        if(isPause) return
         // lấy 1 chướng ngại vật ngẫu nhiên
         const random = Math.floor(Math.random() * obstacles.length)
         const ob = obstacles[random]
@@ -540,8 +546,14 @@ function deleteSquare() {
 
         let setIntervalID = setInterval(function () {
             dropObstacle = true
-            board[ob.x][ob.y] =  colorEmptySquare
-            ob.moveObstacle(1) // huong di xuong
+            if(isPause) return
+            board[ob.x][ob.y] =  WHITE
+            if(ob.checkObstacle(1)) {
+                ob.moveObstacle(2)
+            }else {
+                ob.moveObstacle(1)
+            }
+            
             if (ob.x === ROWS) {
                 ob.unDraw()
                 ob.x = initialX
