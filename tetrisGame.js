@@ -106,12 +106,15 @@ const canvas = document.getElementById("tetris-canvas");
 const ctx = canvas.getContext("2d");
 
 const colorEmptySquare = "WHITE";
+const GRAY = 'GRAY'
 const COLUMNS = 10;
 const ROWS = 20;
 const squareSize = 20;
 
 let stop = false
 let score = 0;
+
+const obstacles = []
 
 // biến nhận biết đang ở level 3
 
@@ -393,7 +396,7 @@ function level_3() {
 
 function level_4() {
     level_2()
-    drawObstacles()
+    deleteSquare()
 }
 
 function level_5() {
@@ -466,18 +469,20 @@ function chooseLevel() {
             break
     }
 }
+
 // Tạo 1 chướng ngại vật xuất hiện sau mỗi 3 giây ngâu nhiên (tối đa 5 obstacles)
 
 function drawObstacles() {
     let count = 0
-    let setIntervalID =  setInterval(function () {
+    let setIntervalID = setInterval(function () {
         let obstacle = randomObstacle()
         // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
-        obstacle = (obstacle.x < 2 || board[obstacle.x][obstacle.y] !== colorEmptySquare) ? randomObstacle() : obstacle
-        drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = 'GRAY')
+        obstacle = (obstacle.x < 2 || obstacle.x > 17 || board[obstacle.x][obstacle.y] !== colorEmptySquare) ? randomObstacle() : obstacle
+        obstacles.push(obstacle)
+        drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = GRAY)
         count++
-        if(count >= 5) clearInterval(setIntervalID)
-    }, 3000)
+        if (count >= 5) clearInterval(setIntervalID)
+    }, 5000)
 }
 
 function Obstacle(x, y) {
@@ -485,30 +490,67 @@ function Obstacle(x, y) {
     this.y = y
 }
 
-// Obstacle.prototype.unDraw = function () {
-//     drawSquare(this.y, this.x, colorEmptySquare)
-// }
-//
-// Obstacle.prototype.draw = function () {
-//     drawSquare(this.y, this.x, 'GRAY')
-// }
-//
-// Obstacle.prototype.collisionObstacle = function (y) {
-//     return board[this.x][this.y + y] !== colorEmptySquare;
-// }
-//
-// Obstacle.prototype.moveObstacle = function() {
-//     if(!this.collisionObstacle(1)){
-//         this.unDraw()
-//         this.y += 1
-//         this.draw()
-//     }
-//
-// }
+Obstacle.prototype.unDraw = function () {
+    drawSquare(this.y, this.x, colorEmptySquare)
+}
+
+Obstacle.prototype.draw = function () {
+    drawSquare(this.y, this.x, GRAY)
+}
+
+Obstacle.prototype.collisionObstacle = function (x, y) {
+    return board[this.x + x][this.y + y] !== colorEmptySquare;
+}
+
+Obstacle.prototype.moveObstacle = function (direction) {
+    this.unDraw()
+    this.x += direction
+    this.draw()
+}
 
 // x,y la cot, dong
 function randomObstacle() {
     const x = Math.floor(Math.random() * ROWS)
     const y = Math.floor(Math.random() * COLUMNS)
     return new Obstacle(x, y)
+}
+let dropObstacle = false
+function deleteSquare() {
+    drawObstacles()
+    setInterval(function () {
+        if (obstacles.length < 5 && !dropObstacle) return
+        // lấy 1 chướng ngại vật ngẫu nhiên
+        const random = Math.floor(Math.random() * obstacles.length)
+        const ob = obstacles[random]
+
+        const initialX = ob.x
+        const initialY = ob.y
+
+        let setIntervalID = setInterval(function () {
+            dropObstacle = true
+            board[ob.x][ob.y] =  colorEmptySquare
+            ob.moveObstacle(1) // huong di xuong
+            if (ob.x === ROWS) {
+                ob.unDraw()
+                ob.x = initialX
+                ob.y = initialY
+                clearInterval(setIntervalID)
+                // Tìm vị trí của đối tượng cần xóa trong mảng
+                const index = obstacles.indexOf(ob);
+                // Loại bỏ đối tượng từ mảng
+                if (index !== -1) {
+                    obstacles.splice(index, 1);
+                }
+            }
+            //tạo chướng ngại vật mới khi độ dài danh sách chứa bằng 0
+            if (obstacles.length === 0){
+                const newObstacle = randomObstacle()
+                obstacles.push(newObstacle)
+                newObstacle.draw()
+                board[newObstacle.x][newObstacle.y] = GRAY
+            }
+        }, 500)
+    }, 30000)
+
+// con loi xet DK
 }
