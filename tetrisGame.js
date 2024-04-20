@@ -20,15 +20,17 @@ $(document).ready(function () {
         dropPiece()
     })
     //pause
-    $('#btn-pause').click(() => {
+    $('#btn-pause').click(function (e) {
         showNotification('Pause')
         $('#btn-continue').prop('disabled', false)
         $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
-        stopObstacle = true
+        e.preventDefault();
+        isPause = true
     })
     //continue
-    $('.bottom-bg').on('click', '#btn-continue', function () {
+    $('.bottom-bg').on('click', '#btn-continue', function (e) {
         closeDialog()
+        e.preventDefault();
     })
     // new game
     $('.bottom-bg').on('click', '#btn-new-game', () => {
@@ -65,7 +67,7 @@ $(document).on("keydown", function (event) {
         }
     }
 
-    if (stop) {
+    if (isPause) {
         event.preventDefault()
         return
     }
@@ -111,12 +113,10 @@ const COLUMNS = 10;
 const ROWS = 20;
 const squareSize = 20;
 
-let stop = false
 let score = 0;
-
+let isPause = false
 const obstacles = []
 
-// biến nhận biết đang ở level 3
 
 // Tạo hàm vẽ ô vuông
 function drawSquare(x, y, color) {
@@ -326,7 +326,7 @@ function dropPiece() {
         startDrop = Date.now()
     }
     // hàm requestAnimationFrame(callback) dùng để cập nhật và vẽ lại theo lịch đã đặt trước
-    if (!gameOver && !stop) requestAnimationFrame(dropPiece)
+    if (!gameOver && !isPause) requestAnimationFrame(dropPiece)
 }
 
 function createCurrentPiece() {
@@ -355,7 +355,7 @@ function createCurrentPiece() {
 
 function implementGameOver() {
     gameOver = true
-    stopObstacle = true
+    isPause = true
     showNotification('Game Over')
     $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
     $('#btn-continue').prop('disabled', true)
@@ -391,7 +391,7 @@ function level_2() {
 
 function level_3() {
     level_2()
-    drawObstacles()
+    drawObstacles(5)
 }
 
 function level_4() {
@@ -411,7 +411,7 @@ function level_6() {
 function dialog() {
     $("#dialog-message").dialog({
         autoOpen: false, modal: true, open: function () {
-            stop = true
+            isPause = true
             $("#overlay").show();
         }
     })
@@ -425,7 +425,7 @@ function showNotification(text) {
 
 function closeDialog() {
     $("#dialog-message").dialog("close");
-    stop = false
+    isPause = false
     gameOver = false
     $("#overlay").hide();
     dropPiece()
@@ -472,16 +472,26 @@ function chooseLevel() {
 
 // Tạo 1 chướng ngại vật xuất hiện sau mỗi 3 giây ngâu nhiên (tối đa 5 obstacles)
 
-function drawObstacles() {
+function drawObstacles(num) {
     let count = 0
     let setIntervalID = setInterval(function () {
         let obstacle = randomObstacle()
+        let initialization = true
         // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
-        obstacle = (obstacle.x < 2 || obstacle.x > 17 || board[obstacle.x][obstacle.y] !== colorEmptySquare) ? randomObstacle() : obstacle
+        while(initialization){
+            if(obstacle.x < 2 || obstacle.x > 17 || board[obstacle.x][obstacle.y] !== colorEmptySquare) {
+                initialization = true
+                obstacle = randomObstacle()
+            }else {
+                initialization = false
+            }
+
+        }
+
         obstacles.push(obstacle)
         drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = GRAY)
         count++
-        if (count >= 5) clearInterval(setIntervalID)
+        if (count >= num) clearInterval(setIntervalID)
     }, 5000)
 }
 
@@ -514,11 +524,13 @@ function randomObstacle() {
     const y = Math.floor(Math.random() * COLUMNS)
     return new Obstacle(x, y)
 }
-let dropObstacle = false
 function deleteSquare() {
-    drawObstacles()
+    let dropObstacle = false
+    drawObstacles(3)
     setInterval(function () {
-        if (obstacles.length < 5 && !dropObstacle) return
+        // tam dung event
+        if (obstacles.length < 3 && !dropObstacle) return
+        if(isPause) return
         // lấy 1 chướng ngại vật ngẫu nhiên
         const random = Math.floor(Math.random() * obstacles.length)
         const ob = obstacles[random]
