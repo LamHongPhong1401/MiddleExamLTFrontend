@@ -21,7 +21,7 @@ $(document).ready(function () {
     })
     //pause
     $('#btn-pause').click(function (e) {
-        showNotification('Pause')
+        showNotification('Tạm dừng')
         $('#btn-continue').prop('disabled', false)
         $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
         e.preventDefault();
@@ -361,7 +361,7 @@ function createCurrentPiece() {
 function implementGameOver() {
     gameOver = true
     isPause = true
-    showNotification('Game Over')
+    showNotification('Kết thúc')
     $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
     $('#btn-continue').prop('disabled', true)
 }
@@ -425,6 +425,7 @@ function dialog() {
 function showNotification(text) {
     customDialog()
     $('.content-top span').text(text)
+    $('.content-top span').css('text-transform', 'uppercase')
     $("#dialog-message").dialog("open");
 }
 
@@ -448,8 +449,8 @@ function customDialog() {
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
-    $('<button id="btn-new-game" class="btn  has-hover">New Game</button>').appendTo('.bottom-bg')
-    $('<button id="btn-continue" class="btn has-hover">Continue</button>').appendTo('.bottom-bg')
+    $('<button id="btn-new-game" class="btn  has-hover"><i class="fa-solid fa-rotate-right"></i></button>').appendTo('.bottom-bg')
+    $('<button id="btn-continue" class="btn has-hover"><i class="fa-solid fa-play"></i></button>').appendTo('.bottom-bg')
 }
 
 //chon level
@@ -475,8 +476,7 @@ function chooseLevel() {
     }
 }
 
-// Tạo 1 chướng ngại vật xuất hiện sau mỗi 3 giây ngâu nhiên (tối đa 5 obstacles)
-
+// Tạo 1 chướng ngại vật xuất hiện sau mỗi 3 giây ngâu nhiên (tối đa num obstacles)
 function drawObstacles(num) {
     let count = 0
     let setIntervalID = setInterval(function () {
@@ -575,6 +575,4 @@ function deleteSquare() {
             }
         }, 500)
     }, 30000)
-
-// con loi xet DK
 }
