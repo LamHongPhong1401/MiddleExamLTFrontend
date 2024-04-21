@@ -466,8 +466,6 @@ function chooseLevel() {
         case 4:
             level_4()
             break
-        // case 5:
-        //     break
         default:
             break
     }
@@ -482,7 +480,7 @@ function drawObstacles(num) {
         obstacles.push(obstacle)
         drawSquare(obstacle.y, obstacle.x, board[obstacle.x][obstacle.y] = GRAY)
         count++
-        if (count >= num) clearInterval(setIntervalID)
+        if (count === num) clearInterval(setIntervalID)
     }, 5000)
 }
 
