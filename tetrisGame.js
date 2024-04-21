@@ -5,71 +5,72 @@ $(document).ready(function () {
     const startGame = $('.start-game')
     const beforeStartGame = $('.before-start-game')
     const btnStartGame = $('#btn-start')
-    const configuraton = $('.bottom-bg')
+    const configuration = $('.bottom-bg')
     const aboutBtn = $('#btn-about')
-    const guideBtn = $('#btn-guide')
     const displayAbout = $('#about')
-    const displayGuide = $('#guide')
     const overlay = $('#overlay')
     const closeAbout = $('#close-about')
+    const continueBtn = $('#btn-continue')
 
     displayAbout.hide()
 
-    $('#btn-start').click(function () {
+    btnStartGame.click(function () {
         aboutBtn.hide()
-        guideBtn.hide()
-        configuraton.hide()
+        configuration.hide()
         btnStartGame.hide()
-        beforeStartGame.css('display', 'none')
+        beforeStartGame.hide()
         startGame.css('display', 'flex')
 
         currentLevel = parseInt($('#level').val())
-
+        $('.name-level').text('Level: '+currentLevel)
         drawBroad()
         chooseLevel()
         dropPiece()
+
     })
     //pause
     $('#btn-pause').click(function (e) {
         showNotification('Tạm dừng')
-        $('#btn-continue').prop('disabled', false)
-        $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
+        continueBtn.prop('disabled', false)
+        continueBtn.addClass('has-hover').removeClass('disabled-btn')
         e.preventDefault();
         isPause = true
     })
     //continue
-    $('.bottom-bg').on('click', '#btn-continue', function (e) {
+    configuration.on('click', '#btn-continue', function (e) {
         closeDialog()
         e.preventDefault();
     })
     // new game
-    $('.bottom-bg').on('click', '#btn-new-game', () => {
+    configuration.on('click', '#btn-new-game', () => {
         reDrawBoard()
         score = 0
         $('#score').text(score)
         closeDialog()
         currentLevel = alterLevel
         chooseLevel()
+        $('.name-level').text('Level: '+ currentLevel)
     })
     $('#level').change(() => {
+
         alterLevel = parseInt($('#level').val())
         if (currentLevel === alterLevel) {
-            $('#btn-continue').prop('disabled', false)
-            $('#btn-continue').addClass('has-hover').removeClass('disabled-btn')
+            continueBtn.prop('disabled', false)
+            continueBtn.addClass('has-hover').removeClass('disabled-btn')
+            console.log('same level')
         } else {
-            $('#btn-continue').prop('disabled', true)
-            $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
+            continueBtn.prop('disabled', true)
+            continueBtn.addClass('disabled-btn').removeClass('has-hover')
         }
     })
     aboutBtn.click(function () {
-       displayAbout.show()
+        displayAbout.css('display', 'flex')
         overlay.show()
     })
-    closeAbout.click(function(){
+    closeAbout.click(function () {
         displayAbout.hide()
         overlay.hide()
     })
-
     dialog()
 })
 
@@ -316,11 +317,11 @@ Piece.prototype.lock = function () {
         if (isFullRow) {
             for (let y = i; y > 1; y--) {
                 for (let j = 0; j < COLUMNS; j++) {
-                    if(board[y - 1][j] === GRAY ) {
+                    if (board[y - 1][j] === GRAY) {
                         board[y][j] = WHITE
                         continue
                     }
-                    if(board[y][j] === GRAY) continue
+                    if (board[y][j] === GRAY) continue
                     board[y][j] = board[y - 1][j]
                 }
             }
@@ -358,22 +359,7 @@ function createCurrentPiece() {
     if (currentPiece === null) return
     currentPiece = nextPiece
     const level = parseInt($('#level').val())
-    switch (level) {
-        case 1:
-            drawNextPiece($('#suggest-piece'))
-            break
-        case 2:
-            break
-        case 3:
-            break
-        // case 4:
-        //     break
-        // case 5:
-        //     break
-        default:
-            break
-    }
-
+    if(level === 1) drawNextPiece($('#suggest-piece'))
 }
 
 function implementGameOver() {
@@ -422,14 +408,6 @@ function level_4() {
     deleteSquare()
 }
 
-function level_5() {
-
-}
-
-function level_6() {
-
-}
-
 // tạo dialog để thông báo
 function dialog() {
     $("#dialog-message").dialog({
@@ -449,6 +427,7 @@ function showNotification(text) {
 
 function closeDialog() {
     $("#dialog-message").dialog("close");
+    $('.bottom-bg').hide()
     isPause = false
     gameOver = false
     $("#overlay").hide();
@@ -467,7 +446,6 @@ function customDialog() {
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
-    $('<button id="btn-exit" class="btn has-hover"><i class="fa-solid fa-house"></i></button>').appendTo('.bottom-bg')
     $('<button id="btn-new-game" class="btn  has-hover"><i class="fa-solid fa-rotate-right"></i></button>').appendTo('.bottom-bg')
     $('<button id="btn-continue" class="btn has-hover"><i class="fa-solid fa-play"></i></button>').appendTo('.bottom-bg')
 }
@@ -522,7 +500,7 @@ Obstacle.prototype.draw = function () {
 }
 
 Obstacle.prototype.checkObstacle = function (x) {
-    if(this.x + x === ROWS) return false
+    if (this.x + x === ROWS) return false
     return board[this.x + x][this.y] === GRAY
 }
 
@@ -538,10 +516,10 @@ function randomObstacle() {
     let y = Math.floor(Math.random() * COLUMNS)
     let initialization = true
     // random lai 1 lan nua neu obstacle thuoc hang thu 1 or 0, hoac bang da ton tai mau khac
-    while(initialization){
+    while (initialization) {
         if (x < 2 || x > 17 || board[x][y] !== WHITE) {
-             x = Math.floor(Math.random() * ROWS)
-             y = Math.floor(Math.random() * COLUMNS)
+            x = Math.floor(Math.random() * ROWS)
+            y = Math.floor(Math.random() * COLUMNS)
             initialization = true
         } else {
             initialization = false
@@ -550,6 +528,7 @@ function randomObstacle() {
     }
     return new Obstacle(x, y)
 }
+
 function deleteSquare() {
     let dropObstacle = false
     drawObstacles(3)
@@ -565,14 +544,15 @@ function deleteSquare() {
 
         let setIntervalID = setInterval(function () {
             dropObstacle = true
-            if(isPause) return
-            board[ob.x][ob.y] =  WHITE
-            if(ob.checkObstacle(1)) {
+            if (isPause) return
+            board[ob.x][ob.y] = WHITE
+            // nếu có 2 chướng ngại vật sát nhau theo hướng dọc thì cái phía trên khi di chuyển sẽ di chuyển 2 ô
+            if (ob.checkObstacle(1)) {
                 ob.moveObstacle(2)
-            }else {
+            } else {
                 ob.moveObstacle(1)
             }
-            
+
             if (ob.x === ROWS) {
                 ob.unDraw()
                 ob.x = initialX
@@ -586,7 +566,7 @@ function deleteSquare() {
                 }
             }
             //tạo chướng ngại vật mới khi độ dài danh sách chứa bằng 0
-            if (obstacles.length === 0){
+            if (obstacles.length === 0) {
                 const newObstacle = randomObstacle()
                 obstacles.push(newObstacle)
                 newObstacle.draw()

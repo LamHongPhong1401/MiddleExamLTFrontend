@@ -235,7 +235,7 @@ h1 {
   display: none;
 }
 .disabled-btn{
-  opacity: 0.3;
+  opacity: 0.3 ;
 }
 
 #about {
@@ -244,6 +244,7 @@ h1 {
   position: fixed;
   top: 0;
   left: 0;
+  display: none;
 }
 
 .about_content{
@@ -266,4 +267,11 @@ h1 {
     top: 2.5em;
     right: 4.5em;
   }
+}
+
+.name-level{
+  font-size: large;
+  color: $color-orange-light;
+  text-transform: uppercase;
+  padding-bottom: 1em;
 }
