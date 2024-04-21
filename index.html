@@ -1,4 +1,4 @@
-<!--21130473_LamHongPhong_0376236485_DH21DTC-->
+<!--21130473_LamHongPhong_0376236485_Dh31DTC-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,13 +20,20 @@
         </div>
 
         <div class="start-game">
-            <div class="left-frame"><canvas id="tetris-canvas" width="200" height="400"></canvas></div>
+            <div class="left-frame">
+                <canvas id="tetris-canvas" width="200" height="400"></canvas>
+            </div>
             <div class="right-frame">
-                <div class="display-suggest"><p></p><canvas width="100" height="100"  id="suggest-piece"></canvas></div>
-                <div class="display-score">
-                    Điểm : <div id="score">0</div>
+                <div class="display-suggest"><p></p>
+                    <canvas width="100" height="100" id="suggest-piece"></canvas>
                 </div>
-                <div class="pause"><button class="btn has-hover" id="btn-pause"><i class="fa-solid fa-pause"></i></button></div>
+                <div class="display-score">
+                    Điểm :
+                    <div id="score">0</div>
+                </div>
+                <div class="pause">
+                    <button class="btn has-hover" id="btn-pause"><i class="fa-solid fa-pause"></i></button>
+                </div>
             </div>
         </div>
 
@@ -38,22 +45,67 @@
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
                 </select>
             </div>
+            <button class="btn has-hover" id="btn-about"><i class="fa-regular fa-address-card"></i></button>
+            <button class="btn has-hover" id="btn-guide"><i class="fa-solid fa-question"></i></button>
             <button class="btn has-hover" id="btn-start">
                 Bắt đầu
             </button>
+
         </div>
     </div>
     <!-- Dialog content -->
-    <div id="dialog-message" title="NOTIFICATION">   </div>
+    <div id="dialog-message" title="NOTIFICATION"></div>
     <div id="overlay"></div>
-</div>
+    <!--about-->
+    <div id="about">
+        <div class="about_content">
+            <ul>
+                <li>
+                    <h3>1. Giới thiệu tổng quan:</h3>
+                    <p>- Xin chào mọi người, mình tên là Lâm Hồng Phong. Hiện tại là sinh viên khoa công nghệ thông tin của Trường Đại học Nông Lâm.</p>
+                </li>
+                <li>
+                    <h3>2. Học vấn và kinh nghiệm làm việc:</h3>
+                    <p>- Tốt nghiêp Trường Tiểu học Phan Hòa 1 (2009-2013).</p>
+                    <p>- Tốt nghiệp Trường Trung học cơ sở Phan Hòa (2014-2017).</p>
+                    <p>- Tốt nghiệp Trượng Trung học phổ thông Bắc Bình (2018-2020).</p>
+                    <p>- Đang là sinh viên năm 3 của Trường Đại học Nông Lâm (2021-2024).</p>
+                </li>
+                <li>
+                    <h3>3. Kỹ năng và sở thích:</h3>
+                    <h4>3.1 Kỹ Năng</h4>
+                    <p>- Thành thạo cơ bản bộ công cụ Office.</p>
+                    <p>- Có kiến thức về Java, Javasript, html, Css, …</p>
+                    <p>- Thành thạo cơ bản bộ thiết kế Canva.</p>
+                    <p>- Có khả năng thích nghi với sự ưu tiên trong học thuật đang thay đổi.</p>
+                    <p>- Kỹ năng giao tiếp bằng văn bản và lời nói được phát triển cao.</p>
+                    <p>- Có khả năng xây dựng mối quan hệ với đồng đội.</p>
+                    <p>- Thực dụng và có thái độ "có thể làm được".</p>
+                    <p>- Có khả năng thích nghi trong môi trường thay đổi liên tục.</p>
+                    <p>- Có thể làm việc tốt dưới áp lực.</p>
+                    <p>- Có tính cách năng động, hăng hái.</p>
+                    <h4>3.2 Sở thích</h4>
+                    <p>- Thích chụp ảnh, chơi game, nghe nhạc, đọc sách, bóng đá và thích uống cà phê</p>
+                </li>
+                <li>
+                    <h3>4. Mục tiêu và phương hướng:</h3>
+                    <p>-  Mục tiêu hiện tại của mình là cố gắng tốt nghiệp đại học đúng thời hạng và tìm được một công việc hợp ý.</p>
+                </li>
+                <li>
+                    <h3>5. Tổng kết</h3>
+                    <p>-  Một khi đã làm thì làm hết khả năng có thể, đó chính châm ngôn sống của mình.</p>
+                </li>
+            </ul>
+            <button class="btn has-hover" id="close-about"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
 
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
 <script src="tetrisGame.js"></script>
 </body>
 </html>

@@ -2,12 +2,22 @@
 21130473_LamHongPhong_0376236485_DH21DTC
  */
 $(document).ready(function () {
-    $('#btn-start').click(function () {
-        const startGame = $('.start-game')
-        const beforeStartGame = $('.before-start-game')
-        const btnStartGame = $('#btn-start')
-        const configuraton = $('.bottom-bg')
+    const startGame = $('.start-game')
+    const beforeStartGame = $('.before-start-game')
+    const btnStartGame = $('#btn-start')
+    const configuraton = $('.bottom-bg')
+    const aboutBtn = $('#btn-about')
+    const guideBtn = $('#btn-guide')
+    const displayAbout = $('#about')
+    const displayGuide = $('#guide')
+    const overlay = $('#overlay')
+    const closeAbout = $('#close-about')
 
+    displayAbout.hide()
+
+    $('#btn-start').click(function () {
+        aboutBtn.hide()
+        guideBtn.hide()
         configuraton.hide()
         btnStartGame.hide()
         beforeStartGame.css('display', 'none')
@@ -50,6 +60,14 @@ $(document).ready(function () {
             $('#btn-continue').prop('disabled', true)
             $('#btn-continue').addClass('disabled-btn').removeClass('has-hover')
         }
+    })
+    aboutBtn.click(function () {
+       displayAbout.show()
+        overlay.show()
+    })
+    closeAbout.click(function(){
+        displayAbout.hide()
+        overlay.hide()
     })
 
     dialog()
@@ -387,7 +405,7 @@ function level_1() {
         return
     }
     $('.display-suggest').addClass('suggest');
-    $('.display-suggest').find('p').text("Suggest");
+    $('.display-suggest').find('p').text("Gợi ý");
 }
 
 function level_2() {
@@ -449,6 +467,7 @@ function customDialog() {
     $('<div class="content-bottom"></div>').appendTo('.dialog-content-container')
     $('.bottom-bg').appendTo('.content-bottom')
     $('.bottom-bg').show()
+    $('<button id="btn-exit" class="btn has-hover"><i class="fa-solid fa-house"></i></button>').appendTo('.bottom-bg')
     $('<button id="btn-new-game" class="btn  has-hover"><i class="fa-solid fa-rotate-right"></i></button>').appendTo('.bottom-bg')
     $('<button id="btn-continue" class="btn has-hover"><i class="fa-solid fa-play"></i></button>').appendTo('.bottom-bg')
 }
