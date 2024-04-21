@@ -57,7 +57,6 @@ $(document).ready(function () {
         if (currentLevel === alterLevel) {
             continueBtn.prop('disabled', false)
             continueBtn.addClass('has-hover').removeClass('disabled-btn')
-            console.log('same level')
         } else {
             continueBtn.prop('disabled', true)
             continueBtn.addClass('disabled-btn').removeClass('has-hover')
@@ -134,7 +133,7 @@ const squareSize = 20;
 
 let score = 0;
 let isPause = false
-const obstacles = []
+let obstacles = []
 
 
 // Tạo hàm vẽ ô vuông
@@ -404,6 +403,7 @@ function level_3() {
 }
 
 function level_4() {
+    obstacles = []
     level_2()
     deleteSquare()
 }
